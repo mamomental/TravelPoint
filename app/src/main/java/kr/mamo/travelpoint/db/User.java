@@ -3,6 +3,7 @@ package kr.mamo.travelpoint.db;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.constant.ConstantsDB;
 
 /**
@@ -39,10 +40,10 @@ public class User extends AbstractTable {
         doVersionLast(db);
     }
     protected void doVersion2(SQLiteDatabase db) {
-        Log.i("TP", "not yet");
+        Log.i(Constants.LOGCAT_TAGNAME, "not yet");
     }
 
     protected void doVersion3(SQLiteDatabase db) {
-        Log.i("TP", "not yet");
+        Log.i(Constants.LOGCAT_TAGNAME, "not yet");
     }
 }

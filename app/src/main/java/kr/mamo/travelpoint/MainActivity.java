@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.DBManager;
 
 
@@ -18,7 +19,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.i("TP", "onCreate");
+        Log.i(Constants.LOGCAT_TAGNAME, "onCreate");
         dbManager = new DBManager(this);
         database = dbManager.getWritableDatabase();
     }
