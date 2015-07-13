@@ -1,17 +1,26 @@
 package kr.mamo.travelpoint;
 
-import android.support.v7.app.ActionBarActivity;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import kr.mamo.travelpoint.db.DBManager;
+
 
 public class MainActivity extends ActionBarActivity {
-
+    DBManager dbManager;
+    SQLiteDatabase database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Log.i("TP", "onCreate");
+        dbManager = new DBManager(this);
+        database = dbManager.getWritableDatabase();
     }
 
     @Override
