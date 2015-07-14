@@ -57,13 +57,9 @@ public class TravelHistory extends AbstractTable {
     protected void doVersion1(SQLiteDatabase db) {
         doVersionLast(db);
     }
-    /*
-    protected void doVersion2(SQLiteDatabase db) {
-        Log.i(Constants.LOGCAT_TAGNAME, "not yet");
-    }
 
-    protected void doVersion3(SQLiteDatabase db) {
-        Log.i(Constants.LOGCAT_TAGNAME, "not yet");
+    protected void doVersion2(SQLiteDatabase db) {
     }
-    */
+    protected void doVersion3(SQLiteDatabase db) {
+    }
 }

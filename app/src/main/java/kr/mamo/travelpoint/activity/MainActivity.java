@@ -1,11 +1,13 @@
-package kr.mamo.travelpoint;
+package kr.mamo.travelpoint.activity;
 
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import kr.mamo.travelpoint.R;
 import kr.mamo.travelpoint.db.DBManager;
 
 
@@ -28,6 +30,12 @@ public class MainActivity extends ActionBarActivity {
         return true;
     }
 
+    private void doActionLogout() {
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -35,10 +43,15 @@ public class MainActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings :
+                break;
+            case R.id.action_logout :
+                doActionLogout();
+                return true;
+//                break;
         }
+
 
         return super.onOptionsItemSelected(item);
     }

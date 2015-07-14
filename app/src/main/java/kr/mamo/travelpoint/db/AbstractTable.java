@@ -29,6 +29,7 @@ public abstract class AbstractTable implements Table {
     @Override
     public void upgradeTable(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion <= newVersion) {
+            Log.d(Constants.LOGCAT_TAGNAME, "AbstractTable::upgradeTable doVersion " + oldVersion);
             doVersion(db, oldVersion);
             upgradeTable(db, oldVersion + 1, newVersion);
         }
@@ -41,26 +42,25 @@ public abstract class AbstractTable implements Table {
 
     protected abstract void doVersionLast(SQLiteDatabase db);
     protected abstract void doVersion1(SQLiteDatabase db);
-//    protected abstract void doVersion2(SQLiteDatabase db);
-//    protected abstract void doVersion3(SQLiteDatabase db);
+    protected abstract void doVersion2(SQLiteDatabase db);
+    protected abstract void doVersion3(SQLiteDatabase db);
 
     protected void setInitialData(SQLiteDatabase db, int version) {
         AssetManager manager = context.getAssets();
         try {
             InputStream is = manager.open("db/" + getTableName() + version + ".txt");
-            Log.i(Constants.LOGCAT_TAGNAME, "file::" + getTableName() + version + ".txt");
 
             BufferedReader r = new BufferedReader(new InputStreamReader(is));
             String line = null;
             while ((line = r.readLine()) != null) {
-                Log.i(Constants.LOGCAT_TAGNAME, "query::" + line);
+                Log.d(Constants.LOGCAT_TAGNAME, "query::" + line);
                 db.execSQL(line);
             }
 
             if (null != is) is.close();
             if (null != r) r.close();
         } catch (IOException e) {
-            Log.i("ErrorMessage : ", e.getMessage());
+            Log.e("ErrorMessage : ", e.getMessage());
         }
     }
     private void doVersion(SQLiteDatabase db, int version) {
@@ -69,10 +69,10 @@ public abstract class AbstractTable implements Table {
                 doVersion1(db);
                 break;
             case 2:
-//                doVersion2(db);
+                doVersion2(db);
                 break;
             case 3:
-//                doVersion3(db);
+                doVersion3(db);
                 break;
             default:
                 doVersionLast(db);
