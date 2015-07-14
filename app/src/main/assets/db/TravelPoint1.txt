@@ -1,0 +1,2 @@
+INSERT INTO TravelPoint (travelId, name, latitude, longitude) VALUES (1, '성산 일출봉', 33.458307, 126.942457);
+INSERT INTO TravelPoint (travelId, name, latitude, longitude) VALUES (2, '천마총', 35.838722, 129.210372);

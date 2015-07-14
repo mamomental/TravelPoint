@@ -8,16 +8,16 @@ import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.constant.ConstantsDB;
 
 /**
- * Created by alucard on 2015-07-13.
+ * Created by alucard on 2015-07-14.
  */
-public class User extends AbstractTable {
-    public User(Context context) {
+public class Travel extends AbstractTable {
+    public Travel(Context context) {
         super(context);
     }
 
     @Override
     public String getTableName() {
-        return ConstantsDB.ConstantsTableUser.TABLE_NAME;
+        return ConstantsDB.ConstantsTableTravel.TABLE_NAME;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class User extends AbstractTable {
         builder.append("CREATE TABLE ");
         builder.append(getTableName());
         builder.append(" (");
-        for (ConstantsDB.ConstantsTableUser.COLUMN column : ConstantsDB.ConstantsTableUser.COLUMN.values()) {
+        for (ConstantsDB.ConstantsTableTravel.COLUMN column : ConstantsDB.ConstantsTableTravel.COLUMN.values()) {
             if (!column.getName().equals("_id")) {
                 builder.append(", ");
             }
@@ -36,11 +36,13 @@ public class User extends AbstractTable {
             builder.append(" ");
             builder.append(column.getExtension());
         }
+
         builder.append(");");
 
-        Log.d(Constants.LOGCAT_TAGNAME, "create table user : " + builder.toString());
+        Log.i(Constants.LOGCAT_TAGNAME, "create table travel : " + builder.toString());
 
         db.execSQL(builder.toString());
+        setInitialData(db, 1);
     }
 
     protected void doVersion1(SQLiteDatabase db) {

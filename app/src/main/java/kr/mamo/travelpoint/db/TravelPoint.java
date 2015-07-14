@@ -8,16 +8,16 @@ import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.constant.ConstantsDB;
 
 /**
- * Created by alucard on 2015-07-13.
+ * Created by alucard on 2015-07-14.
  */
-public class User extends AbstractTable {
-    public User(Context context) {
+public class TravelPoint extends AbstractTable {
+    public TravelPoint(Context context) {
         super(context);
     }
 
     @Override
     public String getTableName() {
-        return ConstantsDB.ConstantsTableUser.TABLE_NAME;
+        return ConstantsDB.ConstantsTableTravelPoint.TABLE_NAME;
     }
 
     @Override
@@ -26,7 +26,7 @@ public class User extends AbstractTable {
         builder.append("CREATE TABLE ");
         builder.append(getTableName());
         builder.append(" (");
-        for (ConstantsDB.ConstantsTableUser.COLUMN column : ConstantsDB.ConstantsTableUser.COLUMN.values()) {
+        for (ConstantsDB.ConstantsTableTravelPoint.COLUMN column : ConstantsDB.ConstantsTableTravelPoint.COLUMN.values()) {
             if (!column.getName().equals("_id")) {
                 builder.append(", ");
             }
@@ -36,12 +36,26 @@ public class User extends AbstractTable {
             builder.append(" ");
             builder.append(column.getExtension());
         }
+
+        for (ConstantsDB.ConstantsTableTravelPoint.INDEX index : ConstantsDB.ConstantsTableTravelPoint.INDEX.values()) {
+            builder.append(", ");
+            builder.append("FOREIGN KEY(");
+            builder.append(index.getColumnName());
+            builder.append(") REFERENCES ");
+            builder.append(index.getReferenceTable());
+            builder.append("(");
+            builder.append(index.getReferenceColumnName());
+            builder.append(")");
+        }
         builder.append(");");
 
-        Log.d(Constants.LOGCAT_TAGNAME, "create table user : " + builder.toString());
+        Log.i(Constants.LOGCAT_TAGNAME, "create table travel point : " + builder.toString());
 
         db.execSQL(builder.toString());
+        setInitialData(db, 1);
     }
+
+
 
     protected void doVersion1(SQLiteDatabase db) {
         doVersionLast(db);
