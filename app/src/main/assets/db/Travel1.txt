@@ -1,0 +1,2 @@
+INSERT INTO Travel (type, name, description) VALUES (0, '제주도', '대한민국 제주도');
+INSERT INTO Travel (type, name, description) VALUES (0, '경주', '대한민국 경상북도 경주');

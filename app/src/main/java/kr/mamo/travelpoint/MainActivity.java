@@ -3,7 +3,6 @@ package kr.mamo.travelpoint;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -18,9 +17,8 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.i("TP", "onCreate");
         dbManager = new DBManager(this);
-        database = dbManager.getWritableDatabase();
+//        database = dbManager.getWritableDatabase();
     }
 
     @Override

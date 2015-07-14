@@ -19,8 +19,14 @@ public class DBManager extends SQLiteOpenHelper implements ConstantsDB {
 
     public DBManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
         tables = new HashMap<String, Table>();
-        tables.put(ConstantsTableUser.TABLE_NAME, new User());
+        tables.put(ConstantsTableUser.TABLE_NAME, new User(context));
+        tables.put(ConstantsTableTravel.TABLE_NAME, new Travel(context));
+        tables.put(ConstantsTableTravelPoint.TABLE_NAME, new TravelPoint(context));
+        tables.put(ConstantsTableTravelHistory.TABLE_NAME, new TravelHistory(context));
+
+        getWritableDatabase();
     }
 
     @Override
@@ -35,5 +41,6 @@ public class DBManager extends SQLiteOpenHelper implements ConstantsDB {
         for (Table table : tables.values()) {
             table.upgradeTable(db, oldVersion, newVersion);
         }
+
     }
 }
