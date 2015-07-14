@@ -12,7 +12,8 @@ public interface ConstantsDB {
 
         public enum COLUMN {
             ID ("_id", "INTEGER", "PRIMARY KEY AUTOINCREMENT"),
-            EMAIL("email", "TEXT", "")
+            EMAIL("email", "TEXT", ""),
+            PASSWORD("password", "TEXT", "");
             ;
 
             private String name;
