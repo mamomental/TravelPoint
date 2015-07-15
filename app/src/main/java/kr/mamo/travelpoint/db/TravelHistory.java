@@ -2,42 +2,38 @@ package kr.mamo.travelpoint.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
-import kr.mamo.travelpoint.constant.Constants;
-import kr.mamo.travelpoint.constant.ConstantsDB;
 
 /**
  * Created by alucard on 2015-07-14.
  */
 public class TravelHistory extends AbstractTable {
+    public static final String TABLE_NAME = "TravelHistory";
+
     public TravelHistory(Context context) {
         super(context);
     }
 
     @Override
     public String getTableName() {
-        return ConstantsDB.ConstantsTableTravelHistory.TABLE_NAME;
+        return TABLE_NAME;
     }
 
     @Override
-    protected void doVersionLast(SQLiteDatabase db) {
+    protected void doCreateTable(SQLiteDatabase db) {
         StringBuilder builder = new StringBuilder();
         builder.append("CREATE TABLE ");
         builder.append(getTableName());
         builder.append(" (");
-        for (ConstantsDB.ConstantsTableTravelHistory.COLUMN column : ConstantsDB.ConstantsTableTravelHistory.COLUMN.values()) {
-            if (!column.getName().equals("_id")) {
+        for (Schema.COLUMN column : Schema.COLUMN.values()) {
+            if (!column.getName().equals("no")) {
                 builder.append(", ");
             }
             builder.append(column.getName());
             builder.append(" ");
             builder.append(column.getType());
-            builder.append(" ");
-            builder.append(column.getExtension());
         }
 
-        for (ConstantsDB.ConstantsTableTravelHistory.INDEX index : ConstantsDB.ConstantsTableTravelHistory.INDEX.values()) {
+        for (Schema.INDEX index : Schema.INDEX.values()) {
             builder.append(", ");
             builder.append("FOREIGN KEY(");
             builder.append(index.getColumnName());
@@ -48,18 +44,78 @@ public class TravelHistory extends AbstractTable {
             builder.append(")");
         }
         builder.append(");");
-
-        Log.d(Constants.LOGCAT_TAGNAME, "create table travel history : " + builder.toString());
-
         db.execSQL(builder.toString());
     }
 
-    protected void doVersion1(SQLiteDatabase db) {
-        doVersionLast(db);
-    }
+    public interface Schema {
 
-    protected void doVersion2(SQLiteDatabase db) {
-    }
-    protected void doVersion3(SQLiteDatabase db) {
+        public enum COLUMN {
+            NO ("no", "INTEGER PRIMARY KEY AUTOINCREMENT"),
+            USER_NO("userNo", "INTEGER"),
+            TRAVEL_NO("travelNo", "INTEGER")
+            ;
+
+            private String name;
+            private String type;
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public String getType() {
+                return type;
+            }
+
+            public void setType(String type) {
+                this.type = type;
+            }
+
+            COLUMN(String name, String type) {
+                this.name = name;
+                this.type = type;
+            }
+        }
+
+        public enum INDEX {
+            FK_USER_ID (Schema.COLUMN.USER_NO.getName(), User.TABLE_NAME, User.Schema.COLUMN.NO.getName()),
+            FK_TRAVEL_ID (Schema.COLUMN.TRAVEL_NO.getName(), Travel.TABLE_NAME, Travel.Schema.COLUMN.NO.getName());
+            private String columnName;
+            private String referenceTable;
+            private String referenceColumnName;
+
+            public String getColumnName() {
+                return columnName;
+            }
+
+            public void setColumnName(String columnName) {
+                this.columnName = columnName;
+            }
+
+            public String getReferenceColumnName() {
+                return referenceColumnName;
+            }
+
+            public void setReferenceColumnName(String referenceColumnName) {
+                this.referenceColumnName = referenceColumnName;
+            }
+
+            public String getReferenceTable() {
+                return referenceTable;
+            }
+
+            public void setReferenceTable(String referenceTable) {
+                this.referenceTable = referenceTable;
+            }
+
+            INDEX(String columnName, String referenceTable, String referenceColumnName) {
+                this.columnName = columnName;
+                this.referenceTable = referenceTable;
+                this.referenceColumnName = referenceColumnName;
+            }
+        }
     }
 }
