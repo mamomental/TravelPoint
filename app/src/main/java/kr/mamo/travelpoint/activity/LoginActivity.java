@@ -2,6 +2,7 @@ package kr.mamo.travelpoint.activity;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -138,10 +139,10 @@ public class LoginActivity extends Activity {
         protected Boolean doInBackground(Void... params) {
             ContentResolver resolver = mContext.getContentResolver();
 
-//            ContentValues row = new ContentValues();
-//            row.put("email", "aaa");
-//            row.put("password", "bbb");
-//            resolver.insert(TravelPointProvider.USER_URI, row);
+            ContentValues row = new ContentValues();
+            row.put("email", "aaa");
+            row.put("password", "bbb");
+            resolver.insert(TravelPointProvider.USER_URI, row);
 
 //            String selection = "email = ?";
 //            String[] selectionArgs = {"aaa"};
@@ -149,12 +150,9 @@ public class LoginActivity extends Activity {
 //            String[] projection = {"_id", "email"};
 //            String selection = "email = ?";
 //            String[] selectionArgs = {"aaa"};
-            Log.i(Constants.LOGCAT_TAGNAME, "test1");
             Uri idUri = Uri.withAppendedPath(TravelPointProvider.CONTENT_URI, "User/aaa");
-            Log.i(Constants.LOGCAT_TAGNAME, "test2");
 
             Cursor cursor = resolver.query(idUri, null, null, null, null);
-            Log.i(Constants.LOGCAT_TAGNAME, "test3");
 
             if (null != cursor) {
                 while (cursor.moveToNext()) {

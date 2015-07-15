@@ -14,19 +14,20 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kr.mamo.travelpoint.constant.Constants;
-import kr.mamo.travelpoint.constant.ConstantsDB;
 import kr.mamo.travelpoint.db.DBManager;
+import kr.mamo.travelpoint.db.User;
 
 public class TravelPointProvider extends ContentProvider {
     public static final String  AUTHORITY    = "kr.mamo.travelpoint.travelpointprovider";
     public static final Uri     CONTENT_URI  = Uri.parse("content://" + AUTHORITY);
-//    public static final Uri     USER_URI  = Uri.withAppendedPath(CONTENT_URI, "User");
-    public static final Uri     USER_URI  = Uri.parse("content://" + AUTHORITY + "User");
+    public static final Uri     USER_URI  = Uri.withAppendedPath(CONTENT_URI, "User");
 
-    static final int USER_EMAIL = 1;
+    static final int USER = 1;
+    static final int USER_EMAIL = 2;
     static final UriMatcher Matcher;
     static{
         Matcher = new UriMatcher(UriMatcher.NO_MATCH);
+        Matcher.addURI(AUTHORITY, "User", USER);
         Matcher.addURI(AUTHORITY, "User/*", USER_EMAIL);
 
     }
@@ -53,19 +54,18 @@ public class TravelPointProvider extends ContentProvider {
 
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        Log.i(Constants.LOGCAT_TAGNAME, "insert : " + uri.toString());
-        if (uri.toString().equals(TravelPointProvider.USER_URI.toString())) {
-            Log.i(Constants.LOGCAT_TAGNAME, "uri is user " + values.get("email"));
-
-            long row = db.insert("User", null, values);
-            if (row > 0) {
-                Uri notiuri = ContentUris.withAppendedId(USER_URI, row);
-                getContext().getContentResolver().notifyChange(notiuri, null);
-                return notiuri;
-            }
+        switch(Matcher.match(uri)) {
+            case USER:
+                long row = db.insert("User", null, values);
+                Log.i(Constants.LOGCAT_TAGNAME, "row : " + row);
+                if (row > 0) {
+                    Uri notiuri = ContentUris.withAppendedId(USER_URI, row);
+                    getContext().getContentResolver().notifyChange(notiuri, null);
+                    return notiuri;
+                }
+                break;
         }
         return null;
-
     }
 
     @Override
@@ -83,22 +83,18 @@ public class TravelPointProvider extends ContentProvider {
         Log.i(Constants.LOGCAT_TAGNAME, "match : " + Matcher.match(uri));
         switch(Matcher.match(uri)) {
             case USER_EMAIL :
-                String[] projection2 = {"_id", "email"};
-                Log.i(Constants.LOGCAT_TAGNAME, "test 11");
+                String[] projection2 = {User.Schema.COLUMN.NO.getName(), User.Schema.COLUMN.EMAIL.getName()};
                 SQLiteQueryBuilder qb = new SQLiteQueryBuilder(); // 쿼리 문장 생성
-                Log.i(Constants.LOGCAT_TAGNAME, "test 12");
-                qb.setTables(ConstantsDB.ConstantsTableUser.TABLE_NAME);
+                qb.setTables(User.TABLE_NAME);
 
                 Map<String, String>  sNotesProjectionMap = new HashMap<String, String>();
-                sNotesProjectionMap.put("_id", "_id");
-                sNotesProjectionMap.put("email", "email");
+                sNotesProjectionMap.put(User.Schema.COLUMN.NO.getName(), User.Schema.COLUMN.NO.getName());
+                sNotesProjectionMap.put(User.Schema.COLUMN.EMAIL.getName(), User.Schema.COLUMN.EMAIL.getName());
                 qb.setProjectionMap(sNotesProjectionMap);
-                Log.i(Constants.LOGCAT_TAGNAME, "test 13 : " + uri.getPathSegments().get(1));
                 qb.appendWhere("email='" + uri.getPathSegments().get(1) + "'");
                 cursor = qb.query(db, null, null, null, null, null, null);
                 Log.i(Constants.LOGCAT_TAGNAME, "test 15");
                 break;
-
         }
 
         return cursor;
