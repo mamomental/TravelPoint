@@ -1,4 +1,4 @@
-package kr.mamo.travelpoint.db;
+package kr.mamo.travelpoint.db.table;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,10 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 /**
  * Created by alucard on 2015-07-14.
  */
-public class TravelHistory extends AbstractTable {
-    public static final String TABLE_NAME = "TravelHistory";
+public class TravelPoint extends AbstractTable {
+    public static final String TABLE_NAME = "TravelPoint";
 
-    public TravelHistory(Context context) {
+
+    public TravelPoint(Context context) {
         super(context);
     }
 
@@ -17,6 +18,8 @@ public class TravelHistory extends AbstractTable {
     public String getTableName() {
         return TABLE_NAME;
     }
+
+
 
     @Override
     protected void doCreateTable(SQLiteDatabase db) {
@@ -33,26 +36,24 @@ public class TravelHistory extends AbstractTable {
             builder.append(column.getType());
         }
 
-        for (Schema.INDEX index : Schema.INDEX.values()) {
+        for (Schema.FKEY fkey : Schema.FKEY.values()) {
             builder.append(", ");
             builder.append("FOREIGN KEY(");
-            builder.append(index.getColumnName());
+            builder.append(fkey.getColumnName());
             builder.append(") REFERENCES ");
-            builder.append(index.getReferenceTable());
-            builder.append("(");
-            builder.append(index.getReferenceColumnName());
-            builder.append(")");
+            builder.append(fkey.getReference());
         }
         builder.append(");");
         db.execSQL(builder.toString());
     }
 
     public interface Schema {
-
         public enum COLUMN {
             NO ("no", "INTEGER PRIMARY KEY AUTOINCREMENT"),
-            USER_NO("userNo", "INTEGER"),
-            TRAVEL_NO("travelNo", "INTEGER")
+            TRAVEL_NO("travelNo", "INTEGER"),
+            NAME("name", "TEXT"),
+            LATITUDE("latitude", "DOUBLE"),
+            LONGITUDE("longitude", "DOUBLE")
             ;
 
             private String name;
@@ -80,12 +81,11 @@ public class TravelHistory extends AbstractTable {
             }
         }
 
-        public enum INDEX {
-            FK_USER_ID (Schema.COLUMN.USER_NO.getName(), User.TABLE_NAME, User.Schema.COLUMN.NO.getName()),
-            FK_TRAVEL_ID (Schema.COLUMN.TRAVEL_NO.getName(), Travel.TABLE_NAME, Travel.Schema.COLUMN.NO.getName());
+        public enum FKEY {
+            FK_TRAVEL_ID (Schema.COLUMN.TRAVEL_NO.getName(), Travel.TABLE_NAME + "(" + User.Schema.COLUMN.NO.getName() + ")")
+            ;
             private String columnName;
-            private String referenceTable;
-            private String referenceColumnName;
+            private String reference;
 
             public String getColumnName() {
                 return columnName;
@@ -95,26 +95,17 @@ public class TravelHistory extends AbstractTable {
                 this.columnName = columnName;
             }
 
-            public String getReferenceColumnName() {
-                return referenceColumnName;
+            public String getReference() {
+                return reference;
             }
 
-            public void setReferenceColumnName(String referenceColumnName) {
-                this.referenceColumnName = referenceColumnName;
+            public void setReference(String reference) {
+                this.reference = reference;
             }
 
-            public String getReferenceTable() {
-                return referenceTable;
-            }
-
-            public void setReferenceTable(String referenceTable) {
-                this.referenceTable = referenceTable;
-            }
-
-            INDEX(String columnName, String referenceTable, String referenceColumnName) {
+            FKEY(String columnName, String reference) {
                 this.columnName = columnName;
-                this.referenceTable = referenceTable;
-                this.referenceColumnName = referenceColumnName;
+                this.reference = reference;
             }
         }
     }

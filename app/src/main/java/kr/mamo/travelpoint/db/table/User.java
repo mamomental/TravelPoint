@@ -1,4 +1,4 @@
-package kr.mamo.travelpoint.db;
+package kr.mamo.travelpoint.db.table;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -28,7 +28,6 @@ public class User extends AbstractTable {
         builder.append(getTableName());
         builder.append(" (");
         for (Schema.COLUMN column : Schema.COLUMN.values()) {
-            Log.i(Constants.LOGCAT_TAGNAME, "" +  column.getName());
             if (!column.getName().equals(Schema.COLUMN.NO.getName())) {
                 builder.append(", ");
             }
@@ -54,7 +53,8 @@ public class User extends AbstractTable {
         public enum COLUMN {
             NO ("no", "INTEGER PRIMARY KEY AUTOINCREMENT"),
             EMAIL("email", "TEXT"),
-            PASSWORD("password", "TEXT");
+            PASSWORD("password", "TEXT"),
+            SIGN_IN("signIn", "INTEGER DEFAULT 0");
 
             private String name;
             private String type;
