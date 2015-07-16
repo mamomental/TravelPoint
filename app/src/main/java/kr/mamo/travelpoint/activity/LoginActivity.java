@@ -1,16 +1,11 @@
 package kr.mamo.travelpoint.activity;
 
 import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -24,8 +19,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import kr.mamo.travelpoint.R;
-import kr.mamo.travelpoint.constant.Constants;
-import kr.mamo.travelpoint.provider.TravelPointProvider;
+import kr.mamo.travelpoint.db.TP;
 
 /**
  * A login screen that offers login via email/password.
@@ -40,6 +34,12 @@ public class LoginActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (null != TP.autoLogin(getApplicationContext())) {
+           startMainActivity();
+        }
+
+
         setContentView(R.layout.activity_login);
 
         // Set up the login form.
@@ -64,6 +64,7 @@ public class LoginActivity extends Activity {
                 attemptLogin();
             }
         });
+
     }
 
     public void attemptLogin() {
@@ -137,32 +138,7 @@ public class LoginActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            ContentResolver resolver = mContext.getContentResolver();
-
-            ContentValues row = new ContentValues();
-            row.put("email", "aaa");
-            row.put("password", "bbb");
-            resolver.insert(TravelPointProvider.USER_URI, row);
-
-//            String selection = "email = ?";
-//            String[] selectionArgs = {"aaa"};
-//            Cursor cursor = resolver.query(TravelPointProvider.USER_URI, projection, selection, selectionArgs, null);
-//            String[] projection = {"_id", "email"};
-//            String selection = "email = ?";
-//            String[] selectionArgs = {"aaa"};
-            Uri idUri = Uri.withAppendedPath(TravelPointProvider.CONTENT_URI, "User/aaa");
-
-            Cursor cursor = resolver.query(idUri, null, null, null, null);
-
-            if (null != cursor) {
-                while (cursor.moveToNext()) {
-                    String email = cursor.getString(cursor.getColumnIndex("email"));
-
-                    Log.i(Constants.LOGCAT_TAGNAME, "query : " + email);
-                }
-            }
-
-            return true;
+            return TP.validateUser(mContext, mEmail, mPassword);
         }
 
         @Override
@@ -170,7 +146,6 @@ public class LoginActivity extends Activity {
             mAuthTask = null;
 
             if (success) {
-//                finish();
                 startMainActivity();
             } else {
                 mPasswordView.setError(getString(R.string.error_incorrect_password));

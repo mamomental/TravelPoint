@@ -1,4 +1,4 @@
-package kr.mamo.travelpoint.db;
+package kr.mamo.travelpoint.db.table;
 
 import android.content.Context;
 import android.content.res.AssetManager;
@@ -24,8 +24,8 @@ public abstract class AbstractTable implements Table {
     @Override
     public void createTable(SQLiteDatabase db) {
         doCreateTable(db);
-//        doCreateTableIndex(db);
-//        setInitialData(db, ConstantsDB.DATABASE_VERSION);
+        doCreateTableIndex(db);
+        setInitialData(db, Constants.DB.DATABASE_VERSION);
     }
 
     @Override
@@ -42,24 +42,18 @@ public abstract class AbstractTable implements Table {
         db.execSQL("DROP TABLE IF EXISTS " + getTableName());
     }
 
-
     protected abstract void doCreateTable(SQLiteDatabase db);
     protected void doCreateTableIndex(SQLiteDatabase db) { }
-
-//    protected abstract void doVersion1(SQLiteDatabase db);
-//    protected abstract void doVersion2(SQLiteDatabase db);
-//    protected abstract void doVersion3(SQLiteDatabase db);
 
     protected void setInitialData(SQLiteDatabase db, int version) {
         AssetManager manager = context.getAssets();
         try {
                 InputStream is = manager.open("db/" + getTableName() + version + ".txt");
-
                 if (null != is) {
                     BufferedReader r = new BufferedReader(new InputStreamReader(is));
                     String line = null;
                     while ((line = r.readLine()) != null) {
-                        Log.d(Constants.LOGCAT_TAGNAME, "query::" + line);
+                       Log.d(Constants.LOGCAT_TAGNAME, "query::" + line);
                         db.execSQL(line);
                     }
 
@@ -73,10 +67,6 @@ public abstract class AbstractTable implements Table {
     private void doVersion(SQLiteDatabase db, int version) {
         switch (version) {
             case 1:
-                break;
-            case 2:
-                break;
-            case 3:
                 break;
             default:
                 break;

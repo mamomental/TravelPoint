@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import kr.mamo.travelpoint.R;
+import kr.mamo.travelpoint.db.TP;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -29,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
     }
 
     private void doActionLogout() {
+        TP.signOut(this);
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
         finish();

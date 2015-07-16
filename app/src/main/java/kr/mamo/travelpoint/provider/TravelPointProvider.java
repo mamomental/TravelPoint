@@ -8,14 +8,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import kr.mamo.travelpoint.constant.Constants;
-import kr.mamo.travelpoint.db.DBManager;
-import kr.mamo.travelpoint.db.User;
+import kr.mamo.travelpoint.db.table.DBManager;
+import kr.mamo.travelpoint.db.table.User;
 
 public class TravelPointProvider extends ContentProvider {
     public static final String  AUTHORITY    = "kr.mamo.travelpoint.travelpointprovider";
@@ -38,6 +36,13 @@ public class TravelPointProvider extends ContentProvider {
     }
 
     @Override
+    public void shutdown() {
+        db.close();
+        dbManager.close();
+        super.shutdown();
+    }
+
+    @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Implement this to handle requests to delete one or more rows.
         throw new UnsupportedOperationException("Not yet implemented");
@@ -56,8 +61,7 @@ public class TravelPointProvider extends ContentProvider {
     public Uri insert(Uri uri, ContentValues values) {
         switch(Matcher.match(uri)) {
             case USER:
-                long row = db.insert("User", null, values);
-                Log.i(Constants.LOGCAT_TAGNAME, "row : " + row);
+                long row = db.insert(User.TABLE_NAME, null, values);
                 if (row > 0) {
                     Uri notiuri = ContentUris.withAppendedId(USER_URI, row);
                     getContext().getContentResolver().notifyChange(notiuri, null);
@@ -79,31 +83,34 @@ public class TravelPointProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         Cursor cursor = null;
-        Log.i(Constants.LOGCAT_TAGNAME, "uri : " + uri.toString());
-        Log.i(Constants.LOGCAT_TAGNAME, "match : " + Matcher.match(uri));
-        switch(Matcher.match(uri)) {
-            case USER_EMAIL :
-                String[] projection2 = {User.Schema.COLUMN.NO.getName(), User.Schema.COLUMN.EMAIL.getName()};
-                SQLiteQueryBuilder qb = new SQLiteQueryBuilder(); // 쿼리 문장 생성
-                qb.setTables(User.TABLE_NAME);
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder(); // 쿼리 문장 생성
+        qb.setTables(User.TABLE_NAME);
 
-                Map<String, String>  sNotesProjectionMap = new HashMap<String, String>();
-                sNotesProjectionMap.put(User.Schema.COLUMN.NO.getName(), User.Schema.COLUMN.NO.getName());
-                sNotesProjectionMap.put(User.Schema.COLUMN.EMAIL.getName(), User.Schema.COLUMN.EMAIL.getName());
-                qb.setProjectionMap(sNotesProjectionMap);
-                qb.appendWhere("email='" + uri.getPathSegments().get(1) + "'");
-                cursor = qb.query(db, null, null, null, null, null, null);
-                Log.i(Constants.LOGCAT_TAGNAME, "test 15");
+        Map<String, String>  sNotesProjectionMap = new HashMap<String, String>();
+
+        for (User.Schema.COLUMN column : User.Schema.COLUMN.values()) {
+            sNotesProjectionMap.put(column.getName(), column.getName());
+        }
+        qb.setProjectionMap(sNotesProjectionMap);
+        switch(Matcher.match(uri)) {
+            case USER :
+                break;
+            case USER_EMAIL :
+                qb.appendWhere(User.Schema.COLUMN.EMAIL.getName() + "='" + uri.getPathSegments().get(1) + "'");
                 break;
         }
+        cursor = qb.query(db, null, null, null, null, null, null);
 
         return cursor;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection,
-                      String[] selectionArgs) {
-        // TODO: Implement this to handle requests to update one or more rows.
-        throw new UnsupportedOperationException("Not yet implemented");
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        switch(Matcher.match(uri)) {
+            case USER_EMAIL:
+                selection = User.Schema.COLUMN.EMAIL.getName() + "='" + uri.getPathSegments().get(1) +"'";
+                return db.update(User.TABLE_NAME, values, selection, selectionArgs);
+        }
+        return 0;
     }
 }

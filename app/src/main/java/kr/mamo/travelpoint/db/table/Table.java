@@ -1,4 +1,4 @@
-package kr.mamo.travelpoint.db;
+package kr.mamo.travelpoint.db.table;
 
 import android.database.sqlite.SQLiteDatabase;
 
