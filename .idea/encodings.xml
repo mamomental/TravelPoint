@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding" defaultCharsetForPropertiesFiles="UTF-8">
-    <file url="file://$PROJECT_DIR$/app/src/main/java/kr/mamo/travelpoint/constant/ConstantsDB.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/kr/mamo/travelpoint/db/table/AbstractTable.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/kr/mamo/travelpoint/db/table/DBManager.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/kr/mamo/travelpoint/db/table/Table.java" charset="UTF-8" />
