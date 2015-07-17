@@ -22,7 +22,10 @@
             android:name=".activity.TravelActivity"
             android:label="@string/app_name" >
         </activity>
-
+        <activity
+            android:name=".activity.TravelPointActivity"
+            android:label="@string/app_name" >
+        </activity>
         <provider
             android:name=".provider.TravelPointProvider"
             android:authorities="kr.mamo.travelpoint.travelpointprovider"

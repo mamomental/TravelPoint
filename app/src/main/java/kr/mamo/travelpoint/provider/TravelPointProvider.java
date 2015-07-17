@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kr.mamo.travelpoint.db.table.DBManager;
+import kr.mamo.travelpoint.db.table.TravelPoint;
 import kr.mamo.travelpoint.db.table.User;
 
 public class TravelPointProvider extends ContentProvider {
@@ -20,16 +21,19 @@ public class TravelPointProvider extends ContentProvider {
     public static final Uri     CONTENT_URI  = Uri.parse("content://" + AUTHORITY);
     public static final Uri     USER_URI  = Uri.withAppendedPath(CONTENT_URI, "User");
     public static final Uri     TRAVEL_URI  = Uri.withAppendedPath(CONTENT_URI, "Travel");
+    public static final Uri     TRAVEL_POINT_URI  = Uri.withAppendedPath(CONTENT_URI, "TravelPoint");
 
     static final int USER = 1;
     static final int USER_EMAIL = 2;
     static final int TRAVEL = 3;
+    static final int TRAVEL_POINT = 4;
     static final UriMatcher Matcher;
     static{
         Matcher = new UriMatcher(UriMatcher.NO_MATCH);
         Matcher.addURI(AUTHORITY, "User", USER);
         Matcher.addURI(AUTHORITY, "User/*", USER_EMAIL);
         Matcher.addURI(AUTHORITY, "Travel", TRAVEL);
+        Matcher.addURI(AUTHORITY, "TravelPoint/*", TRAVEL_POINT);
 
     }
 
@@ -115,6 +119,15 @@ public class TravelPointProvider extends ContentProvider {
                     sNotesProjectionMap.put(column.getName(), column.getName());
                 }
                 qb.setProjectionMap(sNotesProjectionMap);
+                break;
+            case TRAVEL_POINT :
+                qb.setTables(kr.mamo.travelpoint.db.table.TravelPoint.TABLE_NAME);
+
+                for (kr.mamo.travelpoint.db.table.TravelPoint.Schema.COLUMN column : kr.mamo.travelpoint.db.table.TravelPoint.Schema.COLUMN.values()) {
+                    sNotesProjectionMap.put(column.getName(), column.getName());
+                }
+                qb.setProjectionMap(sNotesProjectionMap);
+                qb.appendWhere(TravelPoint.Schema.COLUMN.TRAVEL_NO.getName() + "='" + uri.getPathSegments().get(1) + "'");
                 break;
         }
         cursor = qb.query(db, null, null, null, null, null, null);
