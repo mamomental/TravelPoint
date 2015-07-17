@@ -19,14 +19,17 @@ public class TravelPointProvider extends ContentProvider {
     public static final String  AUTHORITY    = "kr.mamo.travelpoint.travelpointprovider";
     public static final Uri     CONTENT_URI  = Uri.parse("content://" + AUTHORITY);
     public static final Uri     USER_URI  = Uri.withAppendedPath(CONTENT_URI, "User");
+    public static final Uri     TRAVEL_URI  = Uri.withAppendedPath(CONTENT_URI, "Travel");
 
     static final int USER = 1;
     static final int USER_EMAIL = 2;
+    static final int TRAVEL = 3;
     static final UriMatcher Matcher;
     static{
         Matcher = new UriMatcher(UriMatcher.NO_MATCH);
         Matcher.addURI(AUTHORITY, "User", USER);
         Matcher.addURI(AUTHORITY, "User/*", USER_EMAIL);
+        Matcher.addURI(AUTHORITY, "Travel", TRAVEL);
 
     }
 
@@ -84,19 +87,34 @@ public class TravelPointProvider extends ContentProvider {
                         String[] selectionArgs, String sortOrder) {
         Cursor cursor = null;
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder(); // 쿼리 문장 생성
-        qb.setTables(User.TABLE_NAME);
-
-        Map<String, String>  sNotesProjectionMap = new HashMap<String, String>();
-
-        for (User.Schema.COLUMN column : User.Schema.COLUMN.values()) {
-            sNotesProjectionMap.put(column.getName(), column.getName());
-        }
-        qb.setProjectionMap(sNotesProjectionMap);
+        Map<String, String> sNotesProjectionMap = new HashMap<String, String>();
         switch(Matcher.match(uri)) {
             case USER :
+                qb.setTables(User.TABLE_NAME);
+
+                for (User.Schema.COLUMN column : User.Schema.COLUMN.values()) {
+                    sNotesProjectionMap.put(column.getName(), column.getName());
+                }
+                qb.setProjectionMap(sNotesProjectionMap);
+
                 break;
             case USER_EMAIL :
+                qb.setTables(User.TABLE_NAME);
+
+                for (User.Schema.COLUMN column : User.Schema.COLUMN.values()) {
+                    sNotesProjectionMap.put(column.getName(), column.getName());
+                }
+                qb.setProjectionMap(sNotesProjectionMap);
+
                 qb.appendWhere(User.Schema.COLUMN.EMAIL.getName() + "='" + uri.getPathSegments().get(1) + "'");
+                break;
+            case TRAVEL :
+                qb.setTables(kr.mamo.travelpoint.db.table.Travel.TABLE_NAME);
+
+                for (kr.mamo.travelpoint.db.table.Travel.Schema.COLUMN column : kr.mamo.travelpoint.db.table.Travel.Schema.COLUMN.values()) {
+                    sNotesProjectionMap.put(column.getName(), column.getName());
+                }
+                qb.setProjectionMap(sNotesProjectionMap);
                 break;
         }
         cursor = qb.query(db, null, null, null, null, null, null);

@@ -8,6 +8,7 @@ import android.net.Uri;
 
 import java.util.ArrayList;
 
+import kr.mamo.travelpoint.db.table.Travel;
 import kr.mamo.travelpoint.db.table.User;
 import kr.mamo.travelpoint.provider.TravelPointProvider;
 
@@ -17,21 +18,22 @@ import kr.mamo.travelpoint.provider.TravelPointProvider;
 public class TP {
     public static boolean validateUser(Context context, String email, String password) {
         ContentResolver resolver = context.getContentResolver();
+        boolean result = false;
         kr.mamo.travelpoint.db.domain.User user = readUser(context, email);
         if (null != user) {
             if (password.equals(user.getPassword())) {
-                return true;
+                result = true;
             }
         } else {
-            boolean result = createUser(context, email, password);
-            if (result) {
-                user = readUser(context, email);
-                user.setSignIn(true);
-                updateUser(context, user);
-            }
-            return result;
+            result = createUser(context, email, password);
+            user = readUser(context, email);
         }
-        return false;
+
+        if (result && null != user) {
+            user.setSignIn(true);
+            updateUser(context, user);
+        }
+        return result;
     }
 
     public static kr.mamo.travelpoint.db.domain.User autoLogin(Context context) {
@@ -81,6 +83,21 @@ public class TP {
         }
         return list;
     }
+
+    public static ArrayList<kr.mamo.travelpoint.db.domain.Travel> readTravelList(Context context) {
+        ContentResolver resolver = context.getContentResolver();
+        ArrayList<kr.mamo.travelpoint.db.domain.Travel> list = new ArrayList<kr.mamo.travelpoint.db.domain.Travel>();
+        Uri idUri = Uri.withAppendedPath(TravelPointProvider.CONTENT_URI, Travel.TABLE_NAME);
+        Cursor cursor = resolver.query(idUri, null, null, null, null);
+        while (cursor.moveToNext()) {
+            int no = cursor.getInt(cursor.getColumnIndex(Travel.Schema.COLUMN.NO.getName()));
+            String name = cursor.getString(cursor.getColumnIndex(Travel.Schema.COLUMN.NAME.getName()));
+            String description = cursor.getString(cursor.getColumnIndex(Travel.Schema.COLUMN.DESCRIPTION.getName()));
+            list.add(new kr.mamo.travelpoint.db.domain.Travel(no, name, description));
+        }
+        return list;
+    }
+
     private static kr.mamo.travelpoint.db.domain.User readUser(Context context, String email) {
         ContentResolver resolver = context.getContentResolver();
 

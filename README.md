@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.0.8 | travel list view |
 | 0.0.7 | example : use fresco |
 | 0.0.6 | simple login |
 | 0.0.5 | refactoring |
