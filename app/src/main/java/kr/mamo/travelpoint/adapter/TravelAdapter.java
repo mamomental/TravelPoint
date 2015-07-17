@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -67,24 +66,24 @@ public class TravelAdapter extends BaseAdapter {
         name.setText(list.get(position).getName());
         description.setText(list.get(position).getDescription());
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 터치 시 해당 아이템 이름 출력
-                Toast.makeText(context, "리스트 클릭 : "+list.get(pos).getName(), Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // 리스트 아이템을 길게 터치 했을 떄 이벤트 발생
-        convertView.setOnLongClickListener(new View.OnLongClickListener() {
-
-            @Override
-            public boolean onLongClick(View v) {
-                // 터치 시 해당 아이템 이름 출력
-                Toast.makeText(context, "리스트 롱 클릭 : "+list.get(pos).getName(), Toast.LENGTH_SHORT).show();
-                return true;
-            }
-        });
+//        convertView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(context, "리스트 클릭 : " + list.get(pos).getName(), Toast.LENGTH_SHORT).show();
+//                listener.startTravelPointActivity();
+//            }
+//        });
+//
+//        // 리스트 아이템을 길게 터치 했을 떄 이벤트 발생
+//        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+//
+//            @Override
+//            public boolean onLongClick(View v) {
+//                // 터치 시 해당 아이템 이름 출력
+//                Toast.makeText(context, "리스트 롱 클릭 : " + list.get(pos).getName(), Toast.LENGTH_SHORT).show();
+//                return true;
+//            }
+//        });
 
         return convertView;
     }

@@ -5,10 +5,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.ArrayList;
 
+import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.table.Travel;
+import kr.mamo.travelpoint.db.table.TravelPoint;
 import kr.mamo.travelpoint.db.table.User;
 import kr.mamo.travelpoint.provider.TravelPointProvider;
 
@@ -81,6 +84,25 @@ public class TP {
             boolean signIn = (1 == cursor.getInt(cursor.getColumnIndex(User.Schema.COLUMN.SIGN_IN.getName()))) ? true : false;
             list.add(new kr.mamo.travelpoint.db.domain.User(no, email, pw, signIn));
         }
+        return list;
+    }
+
+    public static ArrayList<kr.mamo.travelpoint.db.domain.TravelPoint> readTravelPointList(Context context, int travelNo) {
+        Log.i(Constants.LOGCAT_TAGNAME, "1");
+        ContentResolver resolver = context.getContentResolver();
+        Log.i(Constants.LOGCAT_TAGNAME, "2");
+        ArrayList<kr.mamo.travelpoint.db.domain.TravelPoint> list = new ArrayList<kr.mamo.travelpoint.db.domain.TravelPoint>();
+        Log.i(Constants.LOGCAT_TAGNAME, "3");
+        Uri idUri = Uri.withAppendedPath(TravelPointProvider.CONTENT_URI, TravelPoint.TABLE_NAME + "/" + travelNo);
+        Log.i(Constants.LOGCAT_TAGNAME, "4");
+        Cursor cursor = resolver.query(idUri, null, null, null, null);
+        Log.i(Constants.LOGCAT_TAGNAME, "5");
+        while (cursor.moveToNext()) {
+            int no = cursor.getInt(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.NO.getName()));
+            String name = cursor.getString(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.NAME.getName()));
+            list.add(new kr.mamo.travelpoint.db.domain.TravelPoint(no, name));
+        }
+        Log.i(Constants.LOGCAT_TAGNAME, "6");
         return list;
     }
 

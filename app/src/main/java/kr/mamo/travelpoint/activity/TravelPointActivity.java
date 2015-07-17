@@ -1,46 +1,47 @@
 package kr.mamo.travelpoint.activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.util.ArrayList;
 
 import kr.mamo.travelpoint.R;
-import kr.mamo.travelpoint.adapter.TravelAdapter;
+import kr.mamo.travelpoint.adapter.TravelPointAdapter;
 import kr.mamo.travelpoint.db.TP;
-import kr.mamo.travelpoint.db.domain.Travel;
+import kr.mamo.travelpoint.db.domain.TravelPoint;
 
 
-public class TravelActivity extends AppCompatActivity {
-    private ListView travelList;
-    private TravelAdapter travelAdapter;
-
+public class TravelPointActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ListView travelPointList;
+        TravelPointAdapter travelPointAdapter;
+
         super.onCreate(savedInstanceState);
         Fresco.initialize(this);
-        setContentView(R.layout.activity_travel);
-        travelList = (ListView) findViewById(R.id.travel_list);
-        travelAdapter = new TravelAdapter();
-        travelList.setAdapter(travelAdapter);
-        travelList.setOnItemClickListener(itemClickListener);
+        setContentView(R.layout.activity_travel_point);
+        travelPointList = (ListView) findViewById(R.id.travel_point_list);
+        travelPointAdapter = new TravelPointAdapter();
+        travelPointList.setAdapter(travelPointAdapter);
 
-        ArrayList<Travel> list =  TP.readTravelList(this);
 
-        for (Travel travel : list) {
-            travelAdapter.addTravel(travel);
+
+        ArrayList<TravelPoint> list =  TP.readTravelPointList(this, 1);
+
+        for (TravelPoint travelPoint : list) {
+            travelPointAdapter.addTravelPoint(travelPoint);
         }
 
-//        SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.my_image_view);
-//        simpleDraweeView.setImageURI(Uri.parse("http://www.jeju.go.kr/upload_data/board_data/BBS_0000027/140964116652938.gif"));
+        SimpleDraweeView simpleDraweeView = (SimpleDraweeView)findViewById(R.id.travel_point_image);
+        simpleDraweeView.setImageURI(Uri.parse("http://www.jeju.go.kr/upload_data/board_data/BBS_0000027/140964116652938.gif"));
     }
 
     @Override
@@ -72,20 +73,6 @@ public class TravelActivity extends AppCompatActivity {
                 return true;
 //                break;
         }
-
-
         return super.onOptionsItemSelected(item);
     }
-    private void startTravelPointActivity() {
-        Intent intent = new Intent(getApplicationContext(), TravelPointActivity.class);
-        startActivity(intent);
-    }
-
-    private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
-            Travel travel = (Travel)parent.getAdapter().getItem(position);
-            startTravelPointActivity();
-        }
-    };
 }
