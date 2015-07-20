@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.0.9 | use fragment |
 | 0.0.9 | travelpoint activity |
 | 0.0.8 | travel list view |
 | 0.0.7 | example : use fresco |
