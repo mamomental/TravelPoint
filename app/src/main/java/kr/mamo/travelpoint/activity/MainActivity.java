@@ -2,106 +2,136 @@ package kr.mamo.travelpoint.activity;
 
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import kr.mamo.travelpoint.R;
-import kr.mamo.travelpoint.constant.Constants;
+import kr.mamo.travelpoint.adapter.SlideMenuAdapter;
+import kr.mamo.travelpoint.constant.SlideMenu;
+import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.fragment.FragmentTravel;
 import kr.mamo.travelpoint.fragment.FragmentTravelPoint;
+import kr.mamo.travelpoint.model.SlideMenuItem;
 
 public class MainActivity extends AppCompatActivity {
-    String[] menu;
-    DrawerLayout dLayout;
-    ListView dList;
-    ArrayAdapter<String> adapter;
+    DrawerLayout slideMenuLayout;
+    ListView slideMenuList;
+    SlideMenuAdapter adapter;
     Fragment fragmentTravel;
     Fragment fragmentTravelPoint;
-//    private ListView travelList;
-//    private TravelAdapter travelAdapter;
+    ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
         fragmentTravel = new FragmentTravel();
         fragmentTravelPoint = new FragmentTravelPoint();
-        replaceFragment(1);
-//        travelList = (ListView) findViewById(R.id.travel_list);
-//        travelAdapter = new TravelAdapter();
-//        travelList.setAdapter(travelAdapter);
-////        travelList.setOnItemClickListener(itemClickListener);
-//
-//        ArrayList<Travel> list =  TP.readTravelList(this);
-//
-//        for (Travel travel : list) {
-//            travelAdapter.addTravel(travel);
-//        }
-//
-        menu = new String[]{"Home","Android","Windows","Linux","Raspberry Pi","WordPress","Videos","Contact Us"};
-        dLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        dList = (ListView) findViewById(R.id.left_drawer);
 
-        adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,menu);
-
-        dList.setAdapter(adapter);
-        dList.setSelector(android.R.color.holo_blue_dark);
-
-        dList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
-                dLayout.closeDrawers();
-            }
-
-        });
+        displayFragment(1);
+        initSlideMenu();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (toggle.onOptionsItemSelected(item)) {
             return true;
         }
-
-        return super.onOptionsItemSelected(item);
+      return super.onOptionsItemSelected(item);
     }
 
-    public void replaceFragment(int fragment) {
-
-        Log.i(Constants.LOGCAT_TAGNAME, "replaceFrament : " + fragment);
-
-        Fragment newFragment = fragmentTravel;
-        if (fragment == 1) {
-            newFragment = fragmentTravel;
-
-        } else if (fragment == 2) {
-            newFragment = fragmentTravelPoint;
-
+    @Override
+    public void onBackPressed() {
+        Fragment fragment = getFragmentManager().findFragmentByTag("travelPoint");
+        if (null != fragment && fragment.isVisible()) {
+            displayFragment(1);
+            return;
         }
+        super.onBackPressed();
+    }
+
+    public void displayFragment(int poistion) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
-        transaction.replace(R.id.content_frame, newFragment);
+        switch(poistion) {
+            case 1 :
+                transaction.replace(R.id.content_frame, fragmentTravel, "travel");
+                break;
+            case 2 :
+                transaction.replace(R.id.content_frame, fragmentTravelPoint, "travelPoint");
+                break;
+        }
         transaction.addToBackStack(null);
         transaction.commit();
+    }
+
+    private void initSlideMenu() {
+        slideMenuLayout = (DrawerLayout) findViewById(R.id.side_menu_layout);
+        slideMenuList = (ListView) findViewById(R.id.side_menu);
+
+        toggle = new ActionBarDrawerToggle (
+                this,
+                slideMenuLayout,
+                R.string.app_name,
+                R.string.app_name);
+        slideMenuLayout.setDrawerListener(toggle);
+        toggle.syncState();
+
+        adapter = new SlideMenuAdapter();
+        for (SlideMenu menu : SlideMenu.values()) {
+            adapter.addMenu(new SlideMenuItem(menu.getMenuId(), menu.getName(getResources())));
+        }
+        slideMenuList.setAdapter(adapter);
+        slideMenuList.setOnItemClickListener(new SideMenuItemClickListener());
+    }
+
+    private void startLoginActivity(Class clazz, boolean finish) {
+        Intent intent = new Intent(this, clazz);
+        startActivity(intent);
+        if (finish) {
+            TP.signOut(this);
+            finish();
+        }
+    }
+
+    private boolean onSlideMenuItemSelected(SlideMenuItem menu) {
+        boolean result = false;
+        switch(menu.getId()) {
+            case R.id.action_settings :
+                startLoginActivity(SettingsActivity.class, false);
+                result = true;
+                break;
+//            case R.id.action_logout :
+//                startLoginActivity(LoginActivity.class, true);
+//                result = true;
+//                break;
+            default:
+                break;
+        }
+        return result;
+    }
+
+    private class SideMenuItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> arg0, View v, int position, long id) {
+            slideMenuLayout.closeDrawers();
+            onSlideMenuItemSelected((SlideMenuItem)adapter.getItem(position));
+        }
     }
 }
