@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,9 +24,6 @@ public class FragmentTravel extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_travel, container, false);
-//        String menu = getArguments().getString("Menu");
-//        text= (TextView) view.findViewById(R.id.detail);
-//        text.setText(menu);
 
         travelList = (ListView) view.findViewById(R.id.travel_list);
         travelAdapter = new TravelAdapter();
@@ -46,9 +42,7 @@ public class FragmentTravel extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
             Travel travel = (Travel)parent.getAdapter().getItem(position);
-            Toast.makeText(getActivity(), travel.getName(), Toast.LENGTH_LONG).show();
-//            startTravelPointActivity();
-            ((MainActivity)getActivity()).replaceFragment(2);
+            ((MainActivity)getActivity()).displayFragment(2);
         }
     };
 }

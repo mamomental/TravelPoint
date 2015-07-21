@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.0.11 | slide menu 정리 |
 | 0.0.10 | use fragment |
 | 0.0.9 | travelpoint activity |
 | 0.0.8 | travel list view |
