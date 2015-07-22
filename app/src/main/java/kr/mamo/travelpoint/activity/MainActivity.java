@@ -19,6 +19,7 @@ import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.constant.SlideMenu;
 import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.fragment.FragmentTravel;
+import kr.mamo.travelpoint.fragment.FragmentTravelHistory;
 import kr.mamo.travelpoint.fragment.FragmentTravelPoint;
 import kr.mamo.travelpoint.model.SlideMenuItem;
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     SlideMenuAdapter adapter;
     Fragment fragmentTravel;
     Fragment fragmentTravelPoint;
+    Fragment fragmentTravelHistory;
     ActionBarDrawerToggle toggle;
 
     @Override
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         fragmentTravel = new FragmentTravel();
         fragmentTravelPoint = new FragmentTravelPoint();
+        fragmentTravelHistory = new FragmentTravelHistory();
 
         displayFragment(1);
         initSlideMenu();
@@ -60,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment fragment = getFragmentManager().findFragmentByTag("travelPoint");
+        Fragment fragment = getFragmentManager().findFragmentByTag("travelHistory");
+        if (null != fragment && fragment.isVisible()) {
+            displayFragment(2);
+            return;
+        }
+        fragment = getFragmentManager().findFragmentByTag("travelPoint");
         if (null != fragment && fragment.isVisible()) {
             displayFragment(1);
             return;
@@ -96,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 2 :
                 transaction.replace(R.id.content_frame, fragmentTravelPoint, "travelPoint");
+                break;
+            case 3 :
+                transaction.replace(R.id.content_frame, fragmentTravelHistory, "travelHistory");
                 break;
         }
         transaction.addToBackStack(null);

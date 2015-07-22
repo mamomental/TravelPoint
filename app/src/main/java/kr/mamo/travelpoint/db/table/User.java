@@ -82,7 +82,7 @@ public class User extends AbstractTable {
         }
 
         public enum INDEX {
-            IDX_EMAIL ("CREATE UNIQUE INDEX idx_email ON User(email);");
+            IDX_EMAIL ("CREATE UNIQUE INDEX idx_user_email ON User(email);");
 
             private String value;
 

@@ -4,16 +4,11 @@
         android:key="account_email"
         android:title="@string/pref_title_display_name"
         android:defaultValue="@string/pref_default_display_name"
-        android:selectAllOnFocus="true"
-        android:inputType="textCapWords"
-        android:capitalize="words"
-        android:singleLine="true"
-        android:maxLines="1"
-        android:editable="false"/>
+        android:enabled="false"/>
 
     <Preference
         android:key="account_logout"
-        android:title="logout"  />
+        android:title="@string/pref_title_account_logout"  />
 
     <SwitchPreference
         android:key="account_auto_login"

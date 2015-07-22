@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kr.mamo.travelpoint.db.table.DBManager;
+import kr.mamo.travelpoint.db.table.TravelHistory;
 import kr.mamo.travelpoint.db.table.TravelPoint;
 import kr.mamo.travelpoint.db.table.User;
 
@@ -27,6 +28,7 @@ public class TravelPointProvider extends ContentProvider {
     static final int USER_EMAIL = 2;
     static final int TRAVEL = 3;
     static final int TRAVEL_POINT = 4;
+    static final int TRAVEL_HISTORY = 5;
     static final UriMatcher Matcher;
     static{
         Matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -34,7 +36,7 @@ public class TravelPointProvider extends ContentProvider {
         Matcher.addURI(AUTHORITY, "User/*", USER_EMAIL);
         Matcher.addURI(AUTHORITY, "Travel", TRAVEL);
         Matcher.addURI(AUTHORITY, "TravelPoint/*", TRAVEL_POINT);
-
+        Matcher.addURI(AUTHORITY, "TravelHistory/*/*", TRAVEL_HISTORY);
     }
 
     private DBManager dbManager;
@@ -128,6 +130,15 @@ public class TravelPointProvider extends ContentProvider {
                 }
                 qb.setProjectionMap(sNotesProjectionMap);
                 qb.appendWhere(TravelPoint.Schema.COLUMN.TRAVEL_NO.getName() + "='" + uri.getPathSegments().get(1) + "'");
+                break;
+            case TRAVEL_HISTORY :
+                qb.setTables(kr.mamo.travelpoint.db.table.TravelHistory.TABLE_NAME);
+
+                for (kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN column : kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.values()) {
+                    sNotesProjectionMap.put(column.getName(), column.getName());
+                }
+                qb.setProjectionMap(sNotesProjectionMap);
+                qb.appendWhere(TravelHistory.Schema.COLUMN.USER_NO.getName() + "='" + uri.getPathSegments().get(1) + "' AND " + TravelHistory.Schema.COLUMN.TRAVEL_POINT_NO.getName() + "='" + uri.getPathSegments().get(2) + "'");
                 break;
         }
         cursor = qb.query(db, null, null, null, null, null, null);
