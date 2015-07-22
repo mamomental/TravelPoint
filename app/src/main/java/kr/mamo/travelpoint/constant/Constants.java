@@ -16,6 +16,7 @@ public interface Constants {
         public interface Account {
             public String EMAIL = "account_email";
             public String LOGOUT = "account_logout";
+            public String AUTO_LOGIN = "account_auto_login";
         }
     }
 

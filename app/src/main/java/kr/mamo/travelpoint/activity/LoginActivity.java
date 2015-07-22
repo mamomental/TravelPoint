@@ -38,9 +38,13 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        kr.mamo.travelpoint.db.domain.User user = TP.autoLogin(getApplicationContext());
-        if (null != user) {
-           startMainActivity();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean auto = prefs.getBoolean(Constants.Preference.Account.AUTO_LOGIN, true);
+        if (auto) {
+            kr.mamo.travelpoint.db.domain.User user = TP.autoLogin(getApplicationContext());
+            if (null != user) {
+                startMainActivity();
+            }
         }
 
         setContentView(R.layout.activity_login);

@@ -15,10 +15,10 @@
         android:key="account_logout"
         android:title="logout"  />
 
-    <CheckBoxPreference
-        android:key="example_checkbox"
-        android:title="@string/pref_title_social_recommendations"
-        android:summary="@string/pref_description_social_recommendations"
+    <SwitchPreference
+        android:key="account_auto_login"
+        android:title="@string/pref_title_account_auto_login"
+        android:summary="@string/pref_description_account_auto_login"
         android:defaultValue="true" />
 
     <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
