@@ -1,68 +1,187 @@
 package kr.mamo.travelpoint.activity;
 
+import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
+import android.preference.Preference;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+
+import java.util.List;
 
 import kr.mamo.travelpoint.R;
-import kr.mamo.travelpoint.adapter.SettingsAdapter;
-import kr.mamo.travelpoint.constant.Settings;
-import kr.mamo.travelpoint.model.SettingsItem;
+import kr.mamo.travelpoint.constant.Constants;
 
-public class SettingsActivity extends AppCompatActivity {
-    private ListView settingsList;
-    private SettingsAdapter settingsAdapter;
+public class SettingsActivity extends PreferenceActivity {
+    private static final boolean ALWAYS_SIMPLE_PREFS = false;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        setupSimplePreferencesScreen();
 
-        settingsList = (ListView) findViewById(R.id.settings_list);
-        settingsAdapter = new SettingsAdapter();
-        settingsList.setAdapter(settingsAdapter);
-        settingsList.setOnItemClickListener(itemClickListener);
+        LinearLayout root = (LinearLayout)findViewById(android.R.id.list).getParent().getParent().getParent();
+        Toolbar bar = (Toolbar) LayoutInflater.from(this).inflate(R.layout.settings_toolbar, root, false);
+        root.addView(bar, 0); // insert at top
+        bar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
 
-        for (Settings setting : Settings.values()) {
-            settingsAdapter.addItem(new SettingsItem(setting.getMenuId(), setting.getName(getResources())));
+    private void setupSimplePreferencesScreen() {
+        if (!isSimplePreferences(this)) {
+            return;
+        }
+
+//        PreferenceCategory fakeHeader = new PreferenceCategory(this);
+//        fakeHeader.setTitle(R.string.pref_header_account);
+//        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_account);
+        /*
+        PreferenceCategory fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_notifications);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_notification);
+
+        // Add 'data and sync' preferences, and a corresponding header.
+        fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_data_sync);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_data_sync);
+        */
+        // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
+        // their values. When their values change, their summaries are updated
+        // to reflect the new value, per the Android Design guidelines.
+        bindPreferenceSummaryToValue(findPreference(Constants.Preference.Account.EMAIL));
+        bindPreferenceClickListener(findPreference(Constants.Preference.Account.LOGOUT));
+//        bindPreferenceSummaryToValue(findPreference("example_list"));
+//        bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+//        bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean onIsMultiPane() {
+        return isXLargeTablet(this) && !isSimplePreferences(this);
+    }
+
+    private static boolean isXLargeTablet(Context context) {
+        return (context.getResources().getConfiguration().screenLayout
+                & Configuration.SCREENLAYOUT_SIZE_MASK) >= Configuration.SCREENLAYOUT_SIZE_XLARGE;
+    }
+
+    private static boolean isSimplePreferences(Context context) {
+        return ALWAYS_SIMPLE_PREFS
+                || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
+                || !isXLargeTablet(context);
+    }
+
+    @Override
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public void onBuildHeaders(List<Header> target) {
+        if (!isSimplePreferences(this)) {
+            loadHeadersFromResource(R.xml.pref_headers, target);
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    private void startActivity(Class clazz) {
-        Intent intent = new Intent(this, clazz);
-        startActivity(intent);
-    }
-
-    private boolean onSettingsItemSelected(SettingsItem menu) {
-        boolean result = false;
-        switch(menu.getId()) {
-            case R.id.action_settings :
-//                startActivity(SettingsAccountActivity.class);
-                result = true;
-                break;
-            default:
-                break;
-        }
-        return result;
-    }
-
-    private AdapterView.OnItemClickListener itemClickListener = new ListView.OnItemClickListener() {
+    private Preference.OnPreferenceClickListener onPreferenceClickListener = new Preference.OnPreferenceClickListener() {
         @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
-            SettingsItem item = (SettingsItem)parent.getAdapter().getItem(position);
-            onSettingsItemSelected(item);
-
+        public boolean onPreferenceClick(Preference preference) {
+            if (preference.getKey().equals(Constants.Preference.Account.LOGOUT)) {
+                startActivity();
+            }
+            return true;
         }
     };
+
+    private void startActivity() {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.Preference.Account.LOGOUT, true);
+        setResult(Constants.ACTIVITY_RESULT.SETTINGS, intent);
+        finish();
+    }
+
+    private Preference.OnPreferenceChangeListener onPreferenceChangeListener = new Preference.OnPreferenceChangeListener() {
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object value) {
+            String stringValue = value.toString();
+            preference.setSummary(stringValue);
+            return true;
+        }
+    };
+    private void bindPreferenceClickListener(Preference preference) {
+        preference.setOnPreferenceClickListener(onPreferenceClickListener);
+    }
+
+    private void bindPreferenceSummaryToValue(Preference preference) {
+        preference.setOnPreferenceChangeListener(onPreferenceChangeListener);
+
+        onPreferenceChangeListener.onPreferenceChange(preference,
+                PreferenceManager
+                        .getDefaultSharedPreferences(preference.getContext())
+                        .getString(preference.getKey(), ""));
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class AccountPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_account);
+//            bindPreferenceSummaryToValue(findPreference(Constants.Preference.Account.EMAIL));
+//            bindPreferenceClickListener(findPreference(Constants.Preference.Account.LOGOUT));
+        }
+    }
+
+    /**
+     * This fragment shows notification preferences only. It is used when the
+     * activity is showing a two-pane settings UI.
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class NotificationPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_notification);
+
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // to their values. When their values change, their summaries are
+            // updated to reflect the new value, per the Android Design
+            // guidelines.
+            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+        }
+    }
+     */
+    /**
+     * This fragment shows data and sync preferences only. It is used when the
+     * activity is showing a two-pane settings UI.
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class DataSyncPreferenceFragment extends PreferenceFragment {
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_data_sync);
+
+            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
+            // to their values. When their values change, their summaries are
+            // updated to reflect the new value, per the Android Design
+            // guidelines.
+            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+        }
+    }
+     */
 }

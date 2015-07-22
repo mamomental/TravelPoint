@@ -51,6 +51,11 @@ public class TP {
 
     public static void signIn(Context context, String email, String password) {
         createUser(context, email, password);
+
+
+//        SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(context).edit();
+//        prefs.putString(Constants.Preference.Account.email, email);
+//        prefs.commit();
     }
 
     public static void signOut(Context context) {

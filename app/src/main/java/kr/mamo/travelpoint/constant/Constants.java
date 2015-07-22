@@ -11,4 +11,15 @@ public interface Constants {
         public String DATABASE_NAME = "TravelPoint.db";
         public int DATABASE_VERSION = 1;
     }
+
+    public interface Preference {
+        public interface Account {
+            public String EMAIL = "account_email";
+            public String LOGOUT = "account_logout";
+        }
+    }
+
+    public interface ACTIVITY_RESULT {
+        public int SETTINGS = 1001;
+    }
 }
