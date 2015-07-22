@@ -8,7 +8,7 @@ import kr.mamo.travelpoint.R;
  * Created by alucard on 2015-07-21.
  */
 public enum Settings {
-    ACCOUNT(0, R.string.activity_settings_item_account);
+    ACCOUNT(R.id.action_settings, R.string.activity_settings_item_account);
     private int menuId;
     private int stringId;
 

@@ -15,6 +15,7 @@ import android.widget.ListView;
 
 import kr.mamo.travelpoint.R;
 import kr.mamo.travelpoint.adapter.SlideMenuAdapter;
+import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.constant.SlideMenu;
 import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.fragment.FragmentTravel;
@@ -67,6 +68,26 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (resultCode) {
+            case Constants.ACTIVITY_RESULT.SETTINGS :
+                boolean logout = data.getBooleanExtra(Constants.Preference.Account.LOGOUT, false);
+                if (logout) {
+                    TP.signOut(this);
+                    Intent intent = new Intent(this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                    finish();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
     public void displayFragment(int poistion) {
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         switch(poistion) {
@@ -101,26 +122,14 @@ public class MainActivity extends AppCompatActivity {
         slideMenuList.setOnItemClickListener(new SideMenuItemClickListener());
     }
 
-    private void startLoginActivity(Class clazz, boolean finish) {
-        Intent intent = new Intent(this, clazz);
-        startActivity(intent);
-        if (finish) {
-            TP.signOut(this);
-            finish();
-        }
-    }
-
     private boolean onSlideMenuItemSelected(SlideMenuItem menu) {
         boolean result = false;
         switch(menu.getId()) {
             case R.id.action_settings :
-                startLoginActivity(SettingsActivity.class, false);
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivityForResult(intent, Constants.ACTIVITY_RESULT.SETTINGS);
                 result = true;
                 break;
-//            case R.id.action_logout :
-//                startLoginActivity(LoginActivity.class, true);
-//                result = true;
-//                break;
             default:
                 break;
         }

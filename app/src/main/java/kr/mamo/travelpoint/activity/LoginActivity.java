@@ -3,8 +3,10 @@ package kr.mamo.travelpoint.activity;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.provider.ContactsContract;
 import android.view.KeyEvent;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import kr.mamo.travelpoint.R;
+import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.TP;
 
 /**
@@ -35,10 +38,10 @@ public class LoginActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (null != TP.autoLogin(getApplicationContext())) {
+        kr.mamo.travelpoint.db.domain.User user = TP.autoLogin(getApplicationContext());
+        if (null != user) {
            startMainActivity();
         }
-
 
         setContentView(R.layout.activity_login);
 
@@ -138,7 +141,15 @@ public class LoginActivity extends Activity {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-            return TP.validateUser(mContext, mEmail, mPassword);
+
+            boolean result = TP.validateUser(mContext, mEmail, mPassword);
+            if (result) {
+                SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
+                prefs.putString(Constants.Preference.Account.EMAIL, mEmail);
+                prefs.commit();
+
+            }
+            return result;
         }
 
         @Override

@@ -9,5 +9,7 @@
 
     <string name="activity_settings_title">Settings</string>
 
-    <string name="activity_settings_item_account">Account</string>
+    <string name="activity_settings_item_account">@string/activity_settings_account_title</string>
+
+    <string name="activity_settings_account_title">Account</string>
 </resources>

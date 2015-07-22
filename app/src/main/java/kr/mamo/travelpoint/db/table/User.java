@@ -37,7 +37,7 @@ public class User extends AbstractTable {
         }
         builder.append(");");
 
-        Log.i(Constants.LOGCAT_TAGNAME, builder.toString());
+        Log.d(Constants.LOGCAT_TAGNAME, builder.toString());
 
         db.execSQL(builder.toString());
     }
