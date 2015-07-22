@@ -44,11 +44,24 @@ public class TravelHistory extends AbstractTable {
         db.execSQL(builder.toString());
     }
 
+    @Override
+    protected void doCreateTableIndex(SQLiteDatabase db) {
+        for (Schema.INDEX idx : Schema.INDEX.values()) {
+            db.execSQL(idx.getValue());
+        }
+    }
+
     public interface Schema {
         public enum COLUMN {
             NO ("no", "INTEGER PRIMARY KEY AUTOINCREMENT"),
             USER_NO("userNo", "INTEGER"),
-            TRAVEL_NO("travelNo", "INTEGER");
+            TRAVEL_NO("travelNo", "INTEGER"),
+            TRAVEL_POINT_NO("travelPointNo", "INTEGER"),
+            LATITUDE("latitude", "DOUBLE"),
+            LONGITUDE("longitude", "DOUBLE"),
+            DIARY("diary", "TEXT"),
+            CREATE_DATE("createDate", "DATETIME DEFAULT CURRENT_TIMESTAMP")
+            ;
 
             private String name;
             private String type;
@@ -77,7 +90,8 @@ public class TravelHistory extends AbstractTable {
 
         public enum FKEY {
             FK_USER_ID (Schema.COLUMN.USER_NO.getName(), User.TABLE_NAME + "(" + User.Schema.COLUMN.NO.getName() + ")"),
-            FK_TRAVEL_ID (Schema.COLUMN.TRAVEL_NO.getName(), Travel.TABLE_NAME+ "(" + Travel.Schema.COLUMN.NO.getName() + ")");
+            FK_TRAVEL_ID (Schema.COLUMN.TRAVEL_NO.getName(), Travel.TABLE_NAME+ "(" + Travel.Schema.COLUMN.NO.getName() + ")"),
+            FK_TRAVEL_POINT_ID (COLUMN.TRAVEL_POINT_NO.getName(), TravelPoint.TABLE_NAME+ "(" + TravelPoint.Schema.COLUMN.NO.getName() + ")");
 
             private String columnName;
             private String reference;
@@ -101,6 +115,24 @@ public class TravelHistory extends AbstractTable {
             FKEY(String columnName, String reference) {
                 this.columnName = columnName;
                 this.reference = reference;
+            }
+        }
+
+        public enum INDEX {
+            IDX_EMAIL ("CREATE UNIQUE INDEX idx_travel_history_userNotravelPointNo ON TravelHistory (userNo, travelPointNo);");
+
+            private String value;
+
+            public String getValue() {
+                return value;
+            }
+
+            public void setValue(String value) {
+                this.value = value;
+            }
+
+            INDEX(String value) {
+                this.value = value;
             }
         }
     }

@@ -1,0 +1,1 @@
+INSERT INTO TravelHistory (userNo, travelNo, travelPointNo, latitude, longitude, diary, createDate) VALUES (1, 1, 1, 33.458307, 126.942457, 'test', datetime());

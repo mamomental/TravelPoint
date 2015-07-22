@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.0.14 | activity |
 | 0.0.13 | Preference auto login |
 | 0.0.12 | Settings Preference |
 | 0.0.11 | slide menu 정리 |
