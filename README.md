@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.0.13 | Preference auto login |
 | 0.0.12 | Settings Preference |
 | 0.0.11 | slide menu 정리 |
 | 0.0.10 | use fragment |
