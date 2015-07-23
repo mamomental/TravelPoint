@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import kr.mamo.travelpoint.db.table.DBManager;
+import kr.mamo.travelpoint.db.table.Travel;
 import kr.mamo.travelpoint.db.table.TravelHistory;
 import kr.mamo.travelpoint.db.table.TravelPoint;
 import kr.mamo.travelpoint.db.table.User;
@@ -27,14 +28,16 @@ public class TravelPointProvider extends ContentProvider {
     static final int USER = 1;
     static final int USER_EMAIL = 2;
     static final int TRAVEL = 3;
-    static final int TRAVEL_POINT = 4;
-    static final int TRAVEL_HISTORY = 5;
+    static final int TRAVEL_NO = 4;
+    static final int TRAVEL_POINT = 5;
+    static final int TRAVEL_HISTORY = 6;
     static final UriMatcher Matcher;
     static{
         Matcher = new UriMatcher(UriMatcher.NO_MATCH);
         Matcher.addURI(AUTHORITY, "User", USER);
         Matcher.addURI(AUTHORITY, "User/*", USER_EMAIL);
         Matcher.addURI(AUTHORITY, "Travel", TRAVEL);
+        Matcher.addURI(AUTHORITY, "Travel/*", TRAVEL_NO);
         Matcher.addURI(AUTHORITY, "TravelPoint/*", TRAVEL_POINT);
         Matcher.addURI(AUTHORITY, "TravelHistory/*/*", TRAVEL_HISTORY);
     }
@@ -121,6 +124,15 @@ public class TravelPointProvider extends ContentProvider {
                     sNotesProjectionMap.put(column.getName(), column.getName());
                 }
                 qb.setProjectionMap(sNotesProjectionMap);
+                break;
+            case TRAVEL_NO :
+                qb.setTables(kr.mamo.travelpoint.db.table.Travel.TABLE_NAME);
+
+                for (kr.mamo.travelpoint.db.table.Travel.Schema.COLUMN column : kr.mamo.travelpoint.db.table.Travel.Schema.COLUMN.values()) {
+                    sNotesProjectionMap.put(column.getName(), column.getName());
+                }
+                qb.setProjectionMap(sNotesProjectionMap);
+                qb.appendWhere(Travel.Schema.COLUMN.NO.getName() + "='" + uri.getPathSegments().get(1) + "'");
                 break;
             case TRAVEL_POINT :
                 qb.setTables(kr.mamo.travelpoint.db.table.TravelPoint.TABLE_NAME);

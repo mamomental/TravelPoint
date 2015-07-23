@@ -19,6 +19,7 @@ import kr.mamo.travelpoint.db.domain.Travel;
 public class FragmentTravel extends Fragment {
     private ListView travelList;
     private TravelAdapter travelAdapter;
+    private OnClickTravelListener travelListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,7 +43,22 @@ public class FragmentTravel extends Fragment {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
             Travel travel = (Travel)parent.getAdapter().getItem(position);
+            if (null != travelListener && null != travel) {
+                travelListener.OnClickTravel(travel);
+            }
             ((MainActivity)getActivity()).displayFragment(2);
         }
     };
+
+    public OnClickTravelListener getTravelListener() {
+        return travelListener;
+    }
+
+    public void setTravelListener(OnClickTravelListener travelListener) {
+        this.travelListener = travelListener;
+    }
+
+    public interface OnClickTravelListener {
+		public void OnClickTravel(Travel travel);
+	}
 }

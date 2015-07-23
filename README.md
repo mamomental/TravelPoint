@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.0.15 | googlemap api |
 | 0.0.14 | activity |
 | 0.0.13 | Preference auto login |
 | 0.0.12 | Settings Preference |

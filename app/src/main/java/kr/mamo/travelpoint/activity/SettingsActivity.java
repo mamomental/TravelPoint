@@ -47,7 +47,7 @@ public class SettingsActivity extends PreferenceActivity {
 //        PreferenceCategory fakeHeader = new PreferenceCategory(this);
 //        fakeHeader.setTitle(R.string.pref_header_account);
 //        getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_account);
+        addPreferencesFromResource(R.xml.pref_settings_account);
         /*
         PreferenceCategory fakeHeader = new PreferenceCategory(this);
         fakeHeader.setTitle(R.string.pref_header_notifications);
@@ -93,7 +93,7 @@ public class SettingsActivity extends PreferenceActivity {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<Header> target) {
         if (!isSimplePreferences(this)) {
-            loadHeadersFromResource(R.xml.pref_headers, target);
+            loadHeadersFromResource(R.xml.pref_settings_headers, target);
         }
     }
 
@@ -140,7 +140,7 @@ public class SettingsActivity extends PreferenceActivity {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_account);
+            addPreferencesFromResource(R.xml.pref_settings_account);
 //            bindPreferenceSummaryToValue(findPreference(Constants.Preference.Account.EMAIL));
 //            bindPreferenceClickListener(findPreference(Constants.Preference.Account.LOGOUT));
         }
