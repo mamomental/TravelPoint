@@ -1,6 +1,7 @@
 package kr.mamo.travelpoint.activity;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,9 +28,9 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout slideMenuLayout;
     ListView slideMenuList;
     SlideMenuAdapter adapter;
-    Fragment fragmentTravel;
-    Fragment fragmentTravelPoint;
-    Fragment fragmentTravelHistory;
+    FragmentTravel fragmentTravel;
+    FragmentTravelPoint fragmentTravelPoint;
+    FragmentTravelHistory fragmentTravelHistory;
     ActionBarDrawerToggle toggle;
 
     @Override
@@ -38,9 +39,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        fragmentTravel = new FragmentTravel();
-        fragmentTravelPoint = new FragmentTravelPoint();
-        fragmentTravelHistory = new FragmentTravelHistory();
 
         displayFragment(1);
         initSlideMenu();
@@ -97,16 +95,39 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void displayFragment(int poistion) {
+        FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
+        if (null == fm.findFragmentByTag("travel")) {
+            fragmentTravel = new FragmentTravel();
+            transaction.add(R.id.content_frame, fragmentTravel, "travel");
+        }
+        if (null == fm.findFragmentByTag("travelPoint")) {
+            fragmentTravelPoint = new FragmentTravelPoint();
+            fragmentTravel.setTravelListener(fragmentTravelPoint);
+            transaction.add(R.id.content_frame, fragmentTravelPoint, "travelPoint");
+        }
+        if (null == fm.findFragmentByTag("travelHistory")) {
+            fragmentTravelHistory = new FragmentTravelHistory();
+            transaction.add(R.id.content_frame, fragmentTravelHistory, "travelHistory");
+        }
+
+
         switch(poistion) {
             case 1 :
-                transaction.replace(R.id.content_frame, fragmentTravel, "travel");
+                transaction.show(fragmentTravel);
+                transaction.hide(fragmentTravelPoint);
+                transaction.hide(fragmentTravelHistory);
                 break;
             case 2 :
-                transaction.replace(R.id.content_frame, fragmentTravelPoint, "travelPoint");
+                transaction.hide(fragmentTravel);
+                transaction.show(fragmentTravelPoint);
+                transaction.hide(fragmentTravelHistory);
                 break;
             case 3 :
-                transaction.replace(R.id.content_frame, fragmentTravelHistory, "travelHistory");
+                transaction.hide(fragmentTravel);
+                transaction.hide(fragmentTravelPoint);
+                transaction.show(fragmentTravelHistory);
+
                 break;
         }
         transaction.addToBackStack(null);

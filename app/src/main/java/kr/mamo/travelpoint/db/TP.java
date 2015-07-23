@@ -116,6 +116,22 @@ public class TP {
         return list;
     }
 
+    public static kr.mamo.travelpoint.db.domain.Travel readTravel(Context context, int travelNo) {
+        ContentResolver resolver = context.getContentResolver();
+
+        Uri idUri = Uri.withAppendedPath(TravelPointProvider.CONTENT_URI, Travel.TABLE_NAME + "/" + travelNo);
+        Cursor cursor = resolver.query(idUri, null, null, null, null);
+        while (cursor.moveToNext()) {
+            int no = cursor.getInt(cursor.getColumnIndex(Travel.Schema.COLUMN.NO.getName()));
+            String name = cursor.getString(cursor.getColumnIndex(Travel.Schema.COLUMN.NAME.getName()));
+            double latitude = cursor.getDouble(cursor.getColumnIndex(Travel.Schema.COLUMN.LATITUDE.getName()));
+            double longitude = cursor.getDouble(cursor.getColumnIndex(Travel.Schema.COLUMN.LONGITUDE.getName()));
+            String description = cursor.getString(cursor.getColumnIndex(Travel.Schema.COLUMN.DESCRIPTION.getName()));
+            return new kr.mamo.travelpoint.db.domain.Travel(no, name, latitude, longitude, description);
+        }
+        return null;
+    }
+
     public static ArrayList<kr.mamo.travelpoint.db.domain.Travel> readTravelList(Context context) {
         ContentResolver resolver = context.getContentResolver();
         ArrayList<kr.mamo.travelpoint.db.domain.Travel> list = new ArrayList<kr.mamo.travelpoint.db.domain.Travel>();
@@ -125,7 +141,9 @@ public class TP {
             int no = cursor.getInt(cursor.getColumnIndex(Travel.Schema.COLUMN.NO.getName()));
             String name = cursor.getString(cursor.getColumnIndex(Travel.Schema.COLUMN.NAME.getName()));
             String description = cursor.getString(cursor.getColumnIndex(Travel.Schema.COLUMN.DESCRIPTION.getName()));
-            list.add(new kr.mamo.travelpoint.db.domain.Travel(no, name, description));
+            double latitude = cursor.getDouble(cursor.getColumnIndex(Travel.Schema.COLUMN.LATITUDE.getName()));
+            double longitude = cursor.getDouble(cursor.getColumnIndex(Travel.Schema.COLUMN.LONGITUDE.getName()));
+            list.add(new kr.mamo.travelpoint.db.domain.Travel(no, name, latitude, longitude, description));
         }
         return list;
     }

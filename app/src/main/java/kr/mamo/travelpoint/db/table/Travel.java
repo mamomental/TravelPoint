@@ -41,7 +41,10 @@ public class Travel extends AbstractTable {
         public enum COLUMN {
             NO ("no", "INTEGER PRIMARY KEY AUTOINCREMENT"),
             NAME("name", "TEXT"),
-            DESCRIPTION("description", "TEXT");
+            LATITUDE("latitude", "DOUBLE"),
+            LONGITUDE("longitude", "DOUBLE"),
+            DESCRIPTION("description", "TEXT")
+            ;
 
             private String name;
             private String type;

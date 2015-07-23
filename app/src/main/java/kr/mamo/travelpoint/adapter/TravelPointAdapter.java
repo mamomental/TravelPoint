@@ -63,8 +63,9 @@ public class TravelPointAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addTravelPoint(TravelPoint travelPoint) {
-        list.add(travelPoint);
+    public void addTravelPoint(ArrayList<TravelPoint> list) {
+        this.list = list;
+        notifyDataSetInvalidated();
     }
 
     private class TravelPointHolder {
