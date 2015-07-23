@@ -22,5 +22,14 @@ public interface Constants {
 
     public interface ACTIVITY_RESULT {
         public int SETTINGS = 1001;
+        public int CAMERA = 2001;
+    }
+
+    public interface Fragment {
+        public interface MainActivity  {
+            public int F1 = 1;
+            public int F2 = 2;
+            public int F3 = 3;
+        }
     }
 }

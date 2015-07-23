@@ -1,2 +1,2 @@
-INSERT INTO Travel (name, latitude, longitude, description) VALUES ('제주도', 33.458307, 126.942457, '대한민국 제주도');
-INSERT INTO Travel (name, latitude, longitude, description) VALUES ('경주', 35.838722, 129.210372, '대한민국 경상북도 경주');
+INSERT INTO Travel (name, latitude, longitude, description) VALUES ('제주도', 33.388327, 126.545490, '대한민국 제주도');
+INSERT INTO Travel (name, latitude, longitude, description) VALUES ('경주', 35.857017, 129.243532, '대한민국 경상북도 경주');

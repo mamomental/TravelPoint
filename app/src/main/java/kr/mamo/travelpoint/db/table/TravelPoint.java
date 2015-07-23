@@ -53,7 +53,8 @@ public class TravelPoint extends AbstractTable {
             TRAVEL_NO("travelNo", "INTEGER"),
             NAME("name", "TEXT"),
             LATITUDE("latitude", "DOUBLE"),
-            LONGITUDE("longitude", "DOUBLE")
+            LONGITUDE("longitude", "DOUBLE"),
+            DESCRIPTION("description", "TEXT")
             ;
 
             private String name;
