@@ -2,7 +2,6 @@ package kr.mamo.travelpoint.fragment;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -102,14 +101,14 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
         @Override
         public void onClick(View v) {
             Log.i(Constants.LOGCAT_TAGNAME, "cameraClickListener : ");
-            try {
-                File f = createImageFile();
+//            try {
+//                File f = createImageFile();
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
                 startActivityForResult(takePictureIntent, Constants.ACTIVITY_RESULT.CAMERA);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
         }
     };
 
