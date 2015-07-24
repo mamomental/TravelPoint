@@ -28,11 +28,6 @@
             android:layout_toEndOf="@+id/travel_image"
             android:textSize="20dp" />
     </RelativeLayout>
-    <fragment
-        android:id="@+id/travel_map"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="200dip"/>
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"

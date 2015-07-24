@@ -111,7 +111,10 @@ public class TP {
         while (cursor.moveToNext()) {
             int no = cursor.getInt(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.NO.getName()));
             String name = cursor.getString(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.NAME.getName()));
-            list.add(new kr.mamo.travelpoint.db.domain.TravelPoint(no, name));
+            double latitude = cursor.getDouble(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.LATITUDE.getName()));
+            double longitude = cursor.getDouble(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.LONGITUDE.getName()));
+            String description = cursor.getString(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.DESCRIPTION.getName()));
+            list.add(new kr.mamo.travelpoint.db.domain.TravelPoint(no, name, latitude, longitude, description));
         }
         return list;
     }

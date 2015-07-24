@@ -22,6 +22,7 @@ import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.fragment.FragmentTravel;
 import kr.mamo.travelpoint.fragment.FragmentTravelHistory;
 import kr.mamo.travelpoint.fragment.FragmentTravelPoint;
+import kr.mamo.travelpoint.fragment.FragmentTravelRecord;
 import kr.mamo.travelpoint.model.SlideMenuItem;
 
 public class MainActivity extends AppCompatActivity {
@@ -31,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     FragmentTravel fragmentTravel;
     FragmentTravelPoint fragmentTravelPoint;
     FragmentTravelHistory fragmentTravelHistory;
+    FragmentTravelRecord fragmentTravelRecord;
+
     ActionBarDrawerToggle toggle;
 
     @Override
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        displayFragment(1);
+        displayFragment(Constants.Fragment.MainActivity.F1);
         initSlideMenu();
     }
 
@@ -61,14 +64,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment fragment = getFragmentManager().findFragmentByTag("travelHistory");
+        Fragment fragment = getFragmentManager().findFragmentByTag("travelRecord");
         if (null != fragment && fragment.isVisible()) {
-            displayFragment(2);
+            displayFragment(Constants.Fragment.MainActivity.F3);
+            return;
+        }
+        fragment = getFragmentManager().findFragmentByTag("travelHistory");
+        if (null != fragment && fragment.isVisible()) {
+            displayFragment(Constants.Fragment.MainActivity.F2);
             return;
         }
         fragment = getFragmentManager().findFragmentByTag("travelPoint");
         if (null != fragment && fragment.isVisible()) {
-            displayFragment(1);
+            displayFragment(Constants.Fragment.MainActivity.F1);
             return;
         }
         super.onBackPressed();
@@ -96,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void displayFragment(int poistion) {
         FragmentManager fm = getFragmentManager();
+
         FragmentTransaction transaction = getFragmentManager().beginTransaction();
         if (null == fm.findFragmentByTag("travel")) {
             fragmentTravel = new FragmentTravel();
@@ -108,26 +117,39 @@ public class MainActivity extends AppCompatActivity {
         }
         if (null == fm.findFragmentByTag("travelHistory")) {
             fragmentTravelHistory = new FragmentTravelHistory();
+            fragmentTravelPoint.setTravelPointListener(fragmentTravelHistory);
             transaction.add(R.id.content_frame, fragmentTravelHistory, "travelHistory");
         }
-
+        if (null == fm.findFragmentByTag("travelRecord")) {
+            fragmentTravelRecord = new FragmentTravelRecord();
+            fragmentTravelHistory.setCaptureImageListener(fragmentTravelRecord);
+            transaction.add(R.id.content_frame, fragmentTravelRecord, "travelRecord");
+        }
 
         switch(poistion) {
-            case 1 :
+            case Constants.Fragment.MainActivity.F1 :
                 transaction.show(fragmentTravel);
                 transaction.hide(fragmentTravelPoint);
                 transaction.hide(fragmentTravelHistory);
+                transaction.hide(fragmentTravelRecord);
                 break;
-            case 2 :
+            case Constants.Fragment.MainActivity.F2 :
                 transaction.hide(fragmentTravel);
                 transaction.show(fragmentTravelPoint);
                 transaction.hide(fragmentTravelHistory);
+                transaction.hide(fragmentTravelRecord);
                 break;
-            case 3 :
+            case Constants.Fragment.MainActivity.F3 :
                 transaction.hide(fragmentTravel);
                 transaction.hide(fragmentTravelPoint);
                 transaction.show(fragmentTravelHistory);
-
+                transaction.hide(fragmentTravelRecord);
+                break;
+            case Constants.Fragment.MainActivity.F4 :
+                transaction.hide(fragmentTravel);
+                transaction.hide(fragmentTravelPoint);
+                transaction.hide(fragmentTravelHistory);
+                transaction.show(fragmentTravelRecord);
                 break;
         }
         transaction.addToBackStack(null);

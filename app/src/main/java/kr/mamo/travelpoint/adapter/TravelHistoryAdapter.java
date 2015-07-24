@@ -67,6 +67,11 @@ public class TravelHistoryAdapter extends BaseAdapter {
         list.add(travelPoint);
     }
 
+    public void addItem(ArrayList<TravelHistory> list) {
+        this.list = list;
+        notifyDataSetChanged();
+    }
+
     private class TravelHistoryHolder {
         TextView name;
     }

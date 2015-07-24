@@ -12,18 +12,13 @@ import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 import kr.mamo.travelpoint.R;
 import kr.mamo.travelpoint.activity.MainActivity;
 import kr.mamo.travelpoint.adapter.TravelPointAdapter;
+import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.db.domain.Travel;
 import kr.mamo.travelpoint.db.domain.TravelPoint;
@@ -31,10 +26,9 @@ import kr.mamo.travelpoint.db.domain.TravelPoint;
 public class FragmentTravelPoint extends Fragment implements FragmentTravel.OnClickTravelListener {
     private ListView travelPointList;
     private TravelPointAdapter travelPointAdapter;
-    GoogleMap googleMap;
     SimpleDraweeView travelImage;
     TextView travelDescription;
-
+    OnClickTravelPointListener travelPointListener;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -42,7 +36,7 @@ public class FragmentTravelPoint extends Fragment implements FragmentTravel.OnCl
 
 
         View view = inflater.inflate(R.layout.fragment_travel_point, container, false);
-        googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.travel_map)).getMap();
+
         travelPointList = (ListView) view.findViewById(R.id.travel_point_list);
         travelPointAdapter = new TravelPointAdapter();
         travelPointList.setAdapter(travelPointAdapter);
@@ -57,24 +51,32 @@ public class FragmentTravelPoint extends Fragment implements FragmentTravel.OnCl
 
     @Override
     public void OnClickTravel(Travel travel) {
-        LatLng ll = new LatLng(travel.getLatitude(), travel.getLongitude());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, 7);
-        googleMap.addMarker(new MarkerOptions()
-                        .position(ll)
-                        .title(travel.getName())
-                        .draggable(false)
-        );
-        googleMap.moveCamera(cameraUpdate);
-
         ArrayList<TravelPoint> list =  TP.readTravelPointList(getActivity(), travel.getNo());
-        travelPointAdapter.addTravelPoint(list);
+        travelPointAdapter.addItem(list);
+        travelDescription.setText(travel.getDescription());
     }
 
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
-            TravelPoint travel = (TravelPoint)parent.getAdapter().getItem(position);
-            ((MainActivity)getActivity()).displayFragment(3);
+            TravelPoint travelPoint = (TravelPoint)parent.getAdapter().getItem(position);
+            if (null != travelPointListener) {
+                travelPointListener.OnClickTravelPoint(travelPoint);
+            }
+
+            ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F3);
         }
     };
+
+    public OnClickTravelPointListener getTravelPointListener() {
+        return travelPointListener;
+    }
+
+    public void setTravelPointListener(OnClickTravelPointListener travelPointListener) {
+        this.travelPointListener = travelPointListener;
+    }
+
+    public interface OnClickTravelPointListener {
+        public void OnClickTravelPoint(TravelPoint travelPoint);
+    }
 }

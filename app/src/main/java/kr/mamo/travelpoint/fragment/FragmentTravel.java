@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import kr.mamo.travelpoint.R;
 import kr.mamo.travelpoint.activity.MainActivity;
 import kr.mamo.travelpoint.adapter.TravelAdapter;
+import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.db.domain.Travel;
 
@@ -46,7 +47,7 @@ public class FragmentTravel extends Fragment {
             if (null != travelListener && null != travel) {
                 travelListener.OnClickTravel(travel);
             }
-            ((MainActivity)getActivity()).displayFragment(2);
+            ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F2);
         }
     };
 

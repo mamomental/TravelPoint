@@ -1,2 +1,3 @@
-INSERT INTO TravelPoint (travelNo, name, latitude, longitude) VALUES (1, '성산 일출봉', 33.458307, 126.942457);
-INSERT INTO TravelPoint (travelNo, name, latitude, longitude) VALUES (2, '천마총', 35.838722, 129.210372);
+INSERT INTO TravelPoint (travelNo, name, latitude, longitude, description) VALUES (1, '성산 일출봉', 33.458307, 126.942457, '서귀포시 성산읍에 있는 산으로 분화구 높이는 182m 이며, 성산 일출봉에서의 일출은 영주십경 중 하나이다. 일출봉 분화구와 주변 1km 해역은 성산 일출봉 천연보호구역으로 대한민국의 천연기념물로 지정되어 있다.');
+INSERT INTO TravelPoint (travelNo, name, latitude, longitude, description) VALUES (2, '천마총', 35.838722, 129.210372, '천마총(天馬塚)은 신라 22대 지증왕의 능으로 추정되는 경주의 고분이다. 지름 47m, 높이 12.7m이며, 1973년에 발굴되어, 천마도(국보 제207호), 금관(국보 제188호), 금모(국보 제189호) 등 11,297점의 부장품이 출토되었다. 유물 중에 순백의 천마(天馬) 한 마리가 하늘로 날아 올라가는 그림이 그려진 자작나무 껍질로 만든 천마도가 출토되어 천마총이란 이름이 붙여졌다. 그 밖에 서조도(瑞鳥圖)와 기마인물도(騎馬人物圖)도 출토되었다. 현재 경상북도 경주시에 위치해있으며 무덤 내부를 복원하여 공개하고 있다.');
+INSERT INTO TravelPoint (travelNo, name, latitude, longitude, description) VALUES (3, '판교본사', 37.3991684, 127.1089486, '즐거움으로 연결된 세상, 엔씨소프트가 만들어갑니다.');
