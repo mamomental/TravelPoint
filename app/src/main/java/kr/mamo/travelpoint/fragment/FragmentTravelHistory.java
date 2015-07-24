@@ -38,7 +38,6 @@ import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.db.domain.TravelHistory;
 import kr.mamo.travelpoint.db.domain.TravelPoint;
 import kr.mamo.travelpoint.db.domain.User;
-import kr.mamo.travelpoint.util.ExifUtil;
 
 public class FragmentTravelHistory extends Fragment implements FragmentTravelPoint.OnClickTravelPointListener {
     private ListView travelHistoryList;
