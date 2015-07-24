@@ -2,6 +2,8 @@ package kr.mamo.travelpoint.fragment;
 
 import android.app.Fragment;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -90,9 +92,23 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == Constants.ACTIVITY_RESULT.CAMERA && null != data) {
+        if (requestCode == Constants.ACTIVITY_RESULT.CAMERA && resultCode == getActivity().RESULT_OK) {
             Log.i(Constants.LOGCAT_TAGNAME, "camera");
-            ExifUtil.test(cameraPath);
+            String[] projection = {MediaStore.Images.ImageColumns._ID, MediaStore.Images.ImageColumns.LATITUDE, MediaStore.Images.ImageColumns.LONGITUDE};
+            Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+
+            if (null != cursor && cursor.moveToNext()) {
+                String id = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
+                double lat = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LATITUDE));
+                double lon = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LONGITUDE));
+
+                Log.i(Constants.LOGCAT_TAGNAME, "id : " + id);
+                Log.i(Constants.LOGCAT_TAGNAME, "lat : " + lat);
+                Log.i(Constants.LOGCAT_TAGNAME, "lon : " + lon);
+
+            }
+
         }
     }
 
