@@ -30,6 +30,7 @@ public interface Constants {
             public int F1 = 1;
             public int F2 = 2;
             public int F3 = 3;
+            public int F4 = 4;
         }
     }
 }

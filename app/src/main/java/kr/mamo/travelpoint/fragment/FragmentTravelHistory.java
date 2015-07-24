@@ -31,6 +31,7 @@ import java.util.Date;
 
 import kr.mamo.travelpoint.R;
 import kr.mamo.travelpoint.activity.ImageActivity;
+import kr.mamo.travelpoint.activity.MainActivity;
 import kr.mamo.travelpoint.adapter.TravelHistoryAdapter;
 import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.TP;
@@ -42,6 +43,9 @@ import kr.mamo.travelpoint.util.ExifUtil;
 public class FragmentTravelHistory extends Fragment implements FragmentTravelPoint.OnClickTravelPointListener {
     private ListView travelHistoryList;
     private TravelHistoryAdapter travelHistoryAdapter;
+
+    OnCaptureImageListener captureImageListener;
+
     GoogleMap googleMap;
     TextView travelPointDescription;
     Button camera;
@@ -107,6 +111,9 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
                 Log.i(Constants.LOGCAT_TAGNAME, "lat : " + lat);
                 Log.i(Constants.LOGCAT_TAGNAME, "lon : " + lon);
 
+                if (null != captureImageListener) {
+                    ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F4);
+                }
             }
 
         }
@@ -116,15 +123,21 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
 
         @Override
         public void onClick(View v) {
-            Log.i(Constants.LOGCAT_TAGNAME, "cameraClickListener : ");
-//            try {
-//                File f = createImageFile();
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-                startActivityForResult(takePictureIntent, Constants.ACTIVITY_RESULT.CAMERA);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
+//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivityForResult(takePictureIntent, Constants.ACTIVITY_RESULT.CAMERA);
+
+        Log.i(Constants.LOGCAT_TAGNAME, "사진 찍었다 치고");
+        String[] projection = {MediaStore.Images.ImageColumns.DATA};
+        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
+
+        if (null != cursor && cursor.moveToNext()) {
+            String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
+            if (null != captureImageListener) {
+                ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F4);
+                captureImageListener.OnCaptureImage(Uri.fromFile(new File(path)));
+            }
+        }
         }
     };
 
@@ -168,4 +181,16 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
             startImageActivity();
         }
     };
+
+    public OnCaptureImageListener getCaptureImageListener() {
+        return captureImageListener;
+    }
+
+    public void setCaptureImageListener(OnCaptureImageListener captureImageListener) {
+        this.captureImageListener = captureImageListener;
+    }
+
+    public interface OnCaptureImageListener {
+        public void OnCaptureImage(Uri uri);
+    }
 }
