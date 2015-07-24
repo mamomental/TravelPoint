@@ -101,6 +101,7 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
 
         @Override
         public void onClick(View v) {
+            Log.i(Constants.LOGCAT_TAGNAME, "cameraClickListener : ");
             try {
                 File f = createImageFile();
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -118,12 +119,15 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
 
     public File createImageFile() throws IOException {
         String timeStamp = new SimpleDateFormat( "yyyyMMdd_HHmmss").format( new Date());
+        Log.i(Constants.LOGCAT_TAGNAME, "timeStamp : " + timeStamp);
         String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
+        Log.i(Constants.LOGCAT_TAGNAME, "imageFileName : " + imageFileName);
         File image = File.createTempFile(
                 imageFileName,			// prefix
                 JPEG_FILE_SUFFIX,		// suffix
                 getAlbumDir()				// directory
         );
+
         cameraPath = image.getAbsolutePath();
         Log.i(Constants.LOGCAT_TAGNAME, "cameraPath : " + cameraPath);
         return image;
@@ -134,9 +138,10 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
                 Environment.getExternalStoragePublicDirectory(
                         Environment.DIRECTORY_PICTURES
                 ),
-                Constants.APP_PACKAGE_NAME
+               "TravelPoint"
         );
 
+        Log.i(Constants.LOGCAT_TAGNAME, "storageDir : " + storageDir.getAbsolutePath());
         return storageDir;
     }
 
