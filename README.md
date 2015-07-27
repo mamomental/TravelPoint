@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.0.17 | google api key |
 | 0.0.16 | fragment record |
 | 0.0.15 | googlemap api |
 | 0.0.14 | activity |
