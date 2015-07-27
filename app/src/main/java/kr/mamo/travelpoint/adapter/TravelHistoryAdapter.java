@@ -73,12 +73,18 @@ public class TravelHistoryAdapter extends BaseAdapter {
         if (null != data) {
             String value = data.getDiary() + " " + data.getTravelPointNo() + " " + data.getLatitude() + " " + data.getLongitude();
             if (null != travelPoint) {
-                double distance = Math.round((GPSUtil.calcDistance(travelPoint.getLatitude(), travelPoint.getLongitude(), data.getLatitude(), data.getLongitude()) / 1000f) * 100d) / 100d;
-                value += " : " + distance + " m";
+                value += " : " + GPSUtil.calcDistance(travelPoint.getLatitude(), travelPoint.getLongitude(), data.getLatitude(), data.getLongitude()) + " m";
             }
-            File imageFile = new File(data.getImagePath());
-            if (null != imageFile && imageFile.exists() && imageFile.isFile()) {
-                image.setImageURI(Uri.fromFile(imageFile));
+
+            if (null == data.getImagePath()) {  // for emulator
+                Uri uri = Uri.parse("android.resource://"+context.getPackageName()+"/drawable/penguin");
+                image.setImageURI(uri);
+
+            } else {
+                File imageFile = new File(data.getImagePath());
+                if (null != imageFile && imageFile.exists() && imageFile.isFile()) {
+                    image.setImageURI(Uri.fromFile(imageFile));
+                }
             }
             name.setText(value);
         }
