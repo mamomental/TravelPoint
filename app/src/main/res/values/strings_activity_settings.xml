@@ -13,4 +13,8 @@
 
     <string name="pref_title_account_auto_login">Auto login</string>
     <string name="pref_description_account_auto_login">auto login</string>
+
+
+    <string name="pref_header_license">License</string>
+    <string name="pref_title_license_view">License</string>
 </resources>

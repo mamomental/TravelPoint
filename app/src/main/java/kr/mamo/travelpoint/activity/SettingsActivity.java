@@ -8,9 +8,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -48,12 +50,12 @@ public class SettingsActivity extends PreferenceActivity {
 //        fakeHeader.setTitle(R.string.pref_header_account);
 //        getPreferenceScreen().addPreference(fakeHeader);
         addPreferencesFromResource(R.xml.pref_settings_account);
-        /*
         PreferenceCategory fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_notifications);
+        fakeHeader.setTitle(R.string.pref_header_license);
         getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_notification);
-
+        addPreferencesFromResource(R.xml.pref_settings_license);
+        bindPreferenceClickListener(findPreference(Constants.Preference.License.LICENSE));
+        /*
         // Add 'data and sync' preferences, and a corresponding header.
         fakeHeader = new PreferenceCategory(this);
         fakeHeader.setTitle(R.string.pref_header_data_sync);
@@ -101,13 +103,21 @@ public class SettingsActivity extends PreferenceActivity {
         @Override
         public boolean onPreferenceClick(Preference preference) {
             if (preference.getKey().equals(Constants.Preference.Account.LOGOUT)) {
-                startActivity();
+                logout();
+            } else if (preference.getKey().equals(Constants.Preference.License.LICENSE)) {
+                startLicenseActivity();
             }
             return true;
         }
     };
 
-    private void startActivity() {
+    private void startLicenseActivity() {
+        Log.i(Constants.LOGCAT_TAGNAME, "licenseActivity");
+        Intent intent = new Intent(this, LicenseActivity.class);
+        startActivity(intent);
+    }
+
+    private void logout() {
         Intent intent = new Intent();
         intent.putExtra(Constants.Preference.Account.LOGOUT, true);
         setResult(Constants.ACTIVITY_RESULT.SETTINGS, intent);
@@ -141,47 +151,15 @@ public class SettingsActivity extends PreferenceActivity {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_settings_account);
-//            bindPreferenceSummaryToValue(findPreference(Constants.Preference.Account.EMAIL));
-//            bindPreferenceClickListener(findPreference(Constants.Preference.Account.LOGOUT));
         }
     }
 
-    /**
-     * This fragment shows notification preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment {
+    public static class LicensePreferenceFragment extends PreferenceFragment {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            addPreferencesFromResource(R.xml.pref_settings_license);
         }
     }
-     */
-    /**
-     * This fragment shows data and sync preferences only. It is used when the
-     * activity is showing a two-pane settings UI.
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment {
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
-        }
-    }
-     */
 }

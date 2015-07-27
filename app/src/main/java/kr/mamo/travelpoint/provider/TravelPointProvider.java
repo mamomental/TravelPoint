@@ -8,12 +8,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.table.DBManager;
 import kr.mamo.travelpoint.db.table.Travel;
 import kr.mamo.travelpoint.db.table.TravelHistory;

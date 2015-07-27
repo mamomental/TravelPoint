@@ -5,13 +5,13 @@
     <header
         android:fragment="kr.mamo.travelpoint.activity.SettingsActivity$AccountPreferenceFragment"
         android:title="@string/pref_header_account" />
-<!--
-    <header
-        android:fragment="kr.mamo.travelpoint.activity.SettingsActivity$NotificationPreferenceFragment"
-        android:title="@string/pref_header_notifications" />
 
     <header
-        android:fragment="kr.mamo.travelpoint.activity.SettingsActivity$DataSyncPreferenceFragment"
-        android:title="@string/pref_header_data_sync" />
--->
+        android:fragment="kr.mamo.travelpoint.activity.SettingsActivity$LicensePreferenceFragment"
+        android:title="@string/pref_header_license" />
+    <!--
+        <header
+            android:fragment="kr.mamo.travelpoint.activity.SettingsActivity$DataSyncPreferenceFragment"
+            android:title="@string/pref_header_data_sync" />
+    -->
 </preference-headers>

@@ -5,11 +5,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.util.Log;
 
 import java.util.ArrayList;
 
-import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.table.Travel;
 import kr.mamo.travelpoint.db.table.TravelHistory;
 import kr.mamo.travelpoint.db.table.TravelPoint;
@@ -89,7 +87,6 @@ public class TP {
         row.put(TravelHistory.Schema.COLUMN.LONGITUDE.getName(), longitude);
         row.put(TravelHistory.Schema.COLUMN.DIARY.getName(), diary);
 
-        Log.i(Constants.LOGCAT_TAGNAME, "before insert");
         return null != resolver.insert(TravelPointProvider.TRAVEL_HISTORY_URI, row);
     }
     // read

@@ -18,6 +18,9 @@ public interface Constants {
             public String LOGOUT = "account_logout";
             public String AUTO_LOGIN = "account_auto_login";
         }
+        public interface License {
+            public String LICENSE = "license_view";
+        }
     }
 
     public interface ACTIVITY_RESULT {
