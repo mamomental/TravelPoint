@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,10 +23,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import kr.mamo.travelpoint.R;
 import kr.mamo.travelpoint.activity.ImageActivity;
@@ -37,7 +33,6 @@ import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.db.domain.TravelHistory;
 import kr.mamo.travelpoint.db.domain.TravelPoint;
-import kr.mamo.travelpoint.db.domain.User;
 
 public class FragmentTravelHistory extends Fragment implements FragmentTravelPoint.OnClickTravelPointListener {
     private ListView travelHistoryList;
@@ -48,7 +43,7 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
     GoogleMap googleMap;
     TextView travelPointDescription;
     Button camera;
-    String cameraPath;
+    TravelPoint travelPoint;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -71,6 +66,11 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
 
     @Override
     public void OnClickTravelPoint(TravelPoint travelPoint) {
+        this.travelPoint = travelPoint;
+        travelHistoryAdapter.setTravelPoint(travelPoint);
+
+        Log.i(Constants.LOGCAT_TAGNAME, "tp : " + travelPoint.getNo() + ", " + travelPoint.getName());
+
         LatLng ll = new LatLng(travelPoint.getLatitude(), travelPoint.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, 15);
         googleMap.clear();
@@ -80,15 +80,27 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
                         .draggable(false)
         );
         googleMap.moveCamera(cameraUpdate);
+        travelPointDescription.setText(travelPoint.getDescription());
+        loadTravelHistory();
+    }
 
-        User user = TP.autoLogin(getActivity());
-        ArrayList<TravelHistory> list =  TP.readTravelHistoryList(getActivity(), user.getNo(), travelPoint.getNo());
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
 
+        if (!hidden) {
+            loadTravelHistory();
+        }
+    }
+
+    private void loadTravelHistory() {
+        ArrayList<TravelHistory> list =  TP.readTravelHistoryList(getActivity(), travelPoint.getNo());
+
+        travelHistoryAdapter.clearItems();
         for (TravelHistory travelHistory : list) {
             travelHistoryAdapter.addItem(travelHistory);
         }
-
-        travelPointDescription.setText(travelPoint.getDescription());
+        travelHistoryAdapter.notifyDataSetInvalidated();
     }
 
     @Override
@@ -96,22 +108,15 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == Constants.ACTIVITY_RESULT.CAMERA && resultCode == getActivity().RESULT_OK) {
-            Log.i(Constants.LOGCAT_TAGNAME, "camera");
-            String[] projection = {MediaStore.Images.ImageColumns._ID, MediaStore.Images.ImageColumns.LATITUDE, MediaStore.Images.ImageColumns.LONGITUDE};
+            String[] projection = {MediaStore.Images.ImageColumns.DATA};
             Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
 
             if (null != cursor && cursor.moveToNext()) {
-                String id = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns._ID));
-                double lat = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LATITUDE));
-                double lon = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LONGITUDE));
-
-                Log.i(Constants.LOGCAT_TAGNAME, "id : " + id);
-                Log.i(Constants.LOGCAT_TAGNAME, "lat : " + lat);
-                Log.i(Constants.LOGCAT_TAGNAME, "lon : " + lon);
-
+                String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
                 if (null != captureImageListener) {
                     ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F4);
+                    captureImageListener.OnCaptureImage(Uri.fromFile(new File(path)));
                 }
             }
 
@@ -122,60 +127,15 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
 
         @Override
         public void onClick(View v) {
-//        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//        startActivityForResult(takePictureIntent, Constants.ACTIVITY_RESULT.CAMERA);
-
-        Log.i(Constants.LOGCAT_TAGNAME, "사진 찍었다 치고");
-        String[] projection = {MediaStore.Images.ImageColumns.DATA};
-        Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, MediaStore.Images.ImageColumns.DATE_TAKEN + " DESC");
-
-        if (null != cursor && cursor.moveToNext()) {
-            String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
-            if (null != captureImageListener) {
-                ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F4);
-                captureImageListener.OnCaptureImage(Uri.fromFile(new File(path)));
-            }
-        }
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePictureIntent, Constants.ACTIVITY_RESULT.CAMERA);
         }
     };
-
-    // 저장하기
-    final static String JPEG_FILE_PREFIX = "IMG_";
-    final static String JPEG_FILE_SUFFIX = ".jpg";
-
-    public File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat( "yyyyMMdd_HHmmss").format( new Date());
-        Log.i(Constants.LOGCAT_TAGNAME, "timeStamp : " + timeStamp);
-        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
-        Log.i(Constants.LOGCAT_TAGNAME, "imageFileName : " + imageFileName);
-        File image = File.createTempFile(
-                imageFileName,			// prefix
-                JPEG_FILE_SUFFIX,		// suffix
-                getAlbumDir()				// directory
-        );
-
-        cameraPath = image.getAbsolutePath();
-        Log.i(Constants.LOGCAT_TAGNAME, "cameraPath : " + cameraPath);
-        return image;
-    }
-
-    public File getAlbumDir(){
-        File storageDir = new File(
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES
-                ),
-               "TravelPoint"
-        );
-
-        Log.i(Constants.LOGCAT_TAGNAME, "storageDir : " + storageDir.getAbsolutePath());
-        return storageDir;
-    }
 
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
-            TravelHistory travel = (TravelHistory)parent.getAdapter().getItem(position);
+            TravelHistory travelHistory = (TravelHistory)parent.getAdapter().getItem(position);
 
             startImageActivity();
         }

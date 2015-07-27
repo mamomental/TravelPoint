@@ -28,12 +28,12 @@ public class FragmentTravelPoint extends Fragment implements FragmentTravel.OnCl
     private TravelPointAdapter travelPointAdapter;
     SimpleDraweeView travelImage;
     TextView travelDescription;
-    OnClickTravelPointListener travelPointListener;
+    ArrayList<OnClickTravelPointListener> travelPointListener;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Fresco.initialize(getActivity());
-
 
         View view = inflater.inflate(R.layout.fragment_travel_point, container, false);
 
@@ -60,20 +60,25 @@ public class FragmentTravelPoint extends Fragment implements FragmentTravel.OnCl
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
             TravelPoint travelPoint = (TravelPoint)parent.getAdapter().getItem(position);
-            if (null != travelPointListener) {
-                travelPointListener.OnClickTravelPoint(travelPoint);
+            for (OnClickTravelPointListener listener : travelPointListener) {
+                listener.OnClickTravelPoint(travelPoint);
             }
-
             ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F3);
         }
     };
 
-    public OnClickTravelPointListener getTravelPointListener() {
-        return travelPointListener;
+    public void setTravelPointListener(ArrayList<OnClickTravelPointListener> travelPointListener) {
+        if (null == this.travelPointListener) {
+            this.travelPointListener = new ArrayList<OnClickTravelPointListener>();
+        }
+        this.travelPointListener = travelPointListener;
     }
 
-    public void setTravelPointListener(OnClickTravelPointListener travelPointListener) {
-        this.travelPointListener = travelPointListener;
+    public void addTravelPointListener(OnClickTravelPointListener travelPointListener) {
+        if (null == this.travelPointListener) {
+            this.travelPointListener = new ArrayList<OnClickTravelPointListener>();
+        }
+        this.travelPointListener.add(travelPointListener);
     }
 
     public interface OnClickTravelPointListener {

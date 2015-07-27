@@ -117,12 +117,19 @@ public class MainActivity extends AppCompatActivity {
         }
         if (null == fm.findFragmentByTag("travelHistory")) {
             fragmentTravelHistory = new FragmentTravelHistory();
-            fragmentTravelPoint.setTravelPointListener(fragmentTravelHistory);
+            if (null != fragmentTravelPoint) {
+                fragmentTravelPoint.addTravelPointListener(fragmentTravelHistory);
+            }
             transaction.add(R.id.content_frame, fragmentTravelHistory, "travelHistory");
         }
         if (null == fm.findFragmentByTag("travelRecord")) {
             fragmentTravelRecord = new FragmentTravelRecord();
-            fragmentTravelHistory.setCaptureImageListener(fragmentTravelRecord);
+            if (null != fragmentTravelHistory) {
+                fragmentTravelHistory.setCaptureImageListener(fragmentTravelRecord);
+            }
+            if (null != fragmentTravelPoint) {
+                fragmentTravelPoint.addTravelPointListener(fragmentTravelRecord);
+            }
             transaction.add(R.id.content_frame, fragmentTravelRecord, "travelRecord");
         }
 

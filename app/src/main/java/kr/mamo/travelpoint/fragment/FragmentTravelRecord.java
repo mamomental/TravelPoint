@@ -18,23 +18,20 @@ import android.widget.TextView;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.view.SimpleDraweeView;
 
-import java.io.File;
-import java.util.ArrayList;
-
 import kr.mamo.travelpoint.R;
 import kr.mamo.travelpoint.activity.MainActivity;
-import kr.mamo.travelpoint.adapter.TravelPointAdapter;
 import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.TP;
-import kr.mamo.travelpoint.db.domain.Travel;
 import kr.mamo.travelpoint.db.domain.TravelPoint;
 
-public class FragmentTravelRecord extends Fragment implements FragmentTravelHistory.OnCaptureImageListener {
+public class FragmentTravelRecord extends Fragment implements FragmentTravelHistory.OnCaptureImageListener, FragmentTravelPoint.OnClickTravelPointListener {
     SimpleDraweeView travelRecordImage;
     FragmentTravelHistory.OnCaptureImageListener captureImageListener;
     EditText travelRecordText;
     Button travelRecordBtn;
     Uri currentUri;
+    TravelPoint travelPoint;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,8 +47,20 @@ public class FragmentTravelRecord extends Fragment implements FragmentTravelHist
     }
 
     @Override
+    public void OnClickTravelPoint(TravelPoint travelPoint) {
+        this.travelPoint = travelPoint;
+    }
+
+    @Override
     public void OnCaptureImage(Uri uri) {
-        currentUri = uri;
+        this.currentUri = uri;
+    }
+
+    private View.OnClickListener recordClickListener = new View.OnClickListener() {
+
+        @Override
+        public void onClick(View v) {
+        String diary = travelRecordText.getText().toString();
         travelRecordImage.setImageURI(currentUri);
         String[] projection = {MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.LATITUDE, MediaStore.Images.ImageColumns.LONGITUDE};
         Cursor cursor = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Images.ImageColumns.DATA + "='" + currentUri.getPath() + "'", null, null);
@@ -59,16 +68,9 @@ public class FragmentTravelRecord extends Fragment implements FragmentTravelHist
         if (null != cursor && cursor.moveToNext()) {
             double lat = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LATITUDE));
             double lon = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LONGITUDE));
-            travelRecordText.setText("path : " + currentUri.getPath() + ", lat : " + lat + ", lon : " + lon);
+            TP.createTravelHistory(getActivity(), travelPoint, currentUri.getPath(), lat, lon, diary);
         }
-    }
-
-    private View.OnClickListener recordClickListener = new View.OnClickListener() {
-
-        @Override
-        public void onClick(View v) {
-            String diary = travelRecordText.getText().toString();
-            Log.i(Constants.LOGCAT_TAGNAME, "diary : " + diary);
+            ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F3);
         }
     };
 }
