@@ -120,7 +120,7 @@ public class TravelHistory extends AbstractTable {
         }
 
         public enum INDEX {
-            IDX_EMAIL ("CREATE UNIQUE INDEX idx_travel_history_userNotravelPointNo ON TravelHistory (userNo, travelPointNo);");
+            IDX_EMAIL ("CREATE INDEX idx_travel_history_userNotravelPointNo ON TravelHistory (userNo, travelPointNo);");
 
             private String value;
 

@@ -68,7 +68,6 @@ public class FragmentTravelRecord extends Fragment implements FragmentTravelHist
         if (null != cursor && cursor.moveToNext()) {
             double lat = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LATITUDE));
             double lon = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LONGITUDE));
-//                travelRecordText.setText("path : " + currentUri.getPath() + ", lat : " + lat + ", lon : " + lon);
             TP.createTravelHistory(getActivity(), travelPoint, currentUri.getPath(), lat, lon, diary);
         }
             ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F3);

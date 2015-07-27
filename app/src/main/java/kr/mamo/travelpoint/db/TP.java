@@ -5,9 +5,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.ArrayList;
 
+import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.table.Travel;
 import kr.mamo.travelpoint.db.table.TravelHistory;
 import kr.mamo.travelpoint.db.table.TravelPoint;
@@ -87,6 +89,7 @@ public class TP {
         row.put(TravelHistory.Schema.COLUMN.LONGITUDE.getName(), longitude);
         row.put(TravelHistory.Schema.COLUMN.DIARY.getName(), diary);
 
+        Log.i(Constants.LOGCAT_TAGNAME, "before insert");
         return null != resolver.insert(TravelPointProvider.TRAVEL_HISTORY_URI, row);
     }
     // read
@@ -115,10 +118,11 @@ public class TP {
         while (cursor.moveToNext()) {
             int no = cursor.getInt(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.NO.getName()));
             int travelNo = cursor.getInt(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.TRAVEL_NO.getName()));
+            String imagePath = cursor.getString(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.IMAGE_PATH.getName()));
             double latitude = cursor.getDouble(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.LATITUDE.getName()));
             double longitude = cursor.getDouble(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.LONGITUDE.getName()));
             String diary = cursor.getString(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.DIARY.getName()));
-            list.add(new kr.mamo.travelpoint.db.domain.TravelHistory(no, user.getNo(), travelNo, travelPointNo, latitude, longitude, diary));
+            list.add(new kr.mamo.travelpoint.db.domain.TravelHistory(no, user.getNo(), travelNo, travelPointNo, imagePath, latitude, longitude, diary));
         }
         return list;
     }
