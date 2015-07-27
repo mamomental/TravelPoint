@@ -13,14 +13,14 @@ public class TravelHistory {
     private String diary;
 
 
-    public TravelHistory(int no/*, int userNo, int travelNo, int travelPointNo, double latitude, double longitude, String diary*/) {
+    public TravelHistory(int no, int userNo, int travelNo, int travelPointNo, double latitude, double longitude, String diary) {
         this.no = no;
-//        this.userNo = userNo;
-//        this.travelNo = travelNo;
-//        this.travelPointNo = travelPointNo;
-//        this.latitude = latitude;
-//        this.longitude = longitude;
-//        this.diary = diary;
+        this.userNo = userNo;
+        this.travelNo = travelNo;
+        this.travelPointNo = travelPointNo;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.diary = diary;
     }
 
     public String getDiary() {

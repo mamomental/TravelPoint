@@ -109,6 +109,7 @@ public class TravelPointProvider extends ContentProvider {
         Cursor cursor = null;
         SQLiteQueryBuilder qb = new SQLiteQueryBuilder(); // 쿼리 문장 생성
         Map<String, String> sNotesProjectionMap = new HashMap<String, String>();
+
         switch(Matcher.match(uri)) {
             case USER :
                 qb.setTables(User.TABLE_NAME);
@@ -166,7 +167,6 @@ public class TravelPointProvider extends ContentProvider {
                 break;
         }
         cursor = qb.query(db, null, null, null, null, null, null);
-
         return cursor;
     }
 

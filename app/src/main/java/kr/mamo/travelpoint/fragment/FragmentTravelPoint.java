@@ -60,11 +60,9 @@ public class FragmentTravelPoint extends Fragment implements FragmentTravel.OnCl
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
             TravelPoint travelPoint = (TravelPoint)parent.getAdapter().getItem(position);
-
             for (OnClickTravelPointListener listener : travelPointListener) {
                 listener.OnClickTravelPoint(travelPoint);
             }
-
             ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F3);
         }
     };
