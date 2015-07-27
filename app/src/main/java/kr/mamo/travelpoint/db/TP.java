@@ -50,11 +50,6 @@ public class TP {
 
     public static void signIn(Context context, String email, String password) {
         createUser(context, email, password);
-
-
-//        SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(context).edit();
-//        prefs.putString(Constants.Preference.Account.email, email);
-//        prefs.commit();
     }
 
     public static void signOut(Context context) {
@@ -66,6 +61,12 @@ public class TP {
             }
         }
     }
+
+    public static void createTravelHistory(Context context, kr.mamo.travelpoint.db.domain.TravelPoint travelPoint, String imagePath, double latitude, double longitude, String diary) {
+        kr.mamo.travelpoint.db.domain.User user = autoLogin(context);
+        createTravelHistory(context, user.getNo(), travelPoint.getTravelNo(), travelPoint.getNo(), imagePath, latitude, longitude, diary);
+    }
+
     // create
     private static boolean createUser(Context context, String email, String password) {
         ContentResolver resolver = context.getContentResolver();
@@ -74,6 +75,19 @@ public class TP {
         row.put(User.Schema.COLUMN.EMAIL.getName(), email);
         row.put(User.Schema.COLUMN.PASSWORD.getName(), password);
         return null != resolver.insert(TravelPointProvider.USER_URI, row);
+    }
+    private static boolean createTravelHistory(Context context, int userNo, int travelNo, int travelPointNo, String imagePath, double latitude, double longitude, String diary) {
+        ContentResolver resolver = context.getContentResolver();
+        ContentValues row = new ContentValues();
+        row.put(TravelHistory.Schema.COLUMN.USER_NO.getName(), userNo);
+        row.put(TravelHistory.Schema.COLUMN.TRAVEL_NO.getName(), travelNo);
+        row.put(TravelHistory.Schema.COLUMN.TRAVEL_POINT_NO.getName(), travelPointNo);
+        row.put(TravelHistory.Schema.COLUMN.IMAGE_PATH.getName(), imagePath);
+        row.put(TravelHistory.Schema.COLUMN.LATITUDE.getName(), latitude);
+        row.put(TravelHistory.Schema.COLUMN.LONGITUDE.getName(), longitude);
+        row.put(TravelHistory.Schema.COLUMN.DIARY.getName(), diary);
+
+        return null != resolver.insert(TravelPointProvider.TRAVEL_HISTORY_URI, row);
     }
     // read
     private static ArrayList<kr.mamo.travelpoint.db.domain.User> readUserList(Context context) {
@@ -114,7 +128,7 @@ public class TP {
             double latitude = cursor.getDouble(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.LATITUDE.getName()));
             double longitude = cursor.getDouble(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.LONGITUDE.getName()));
             String description = cursor.getString(cursor.getColumnIndex(TravelPoint.Schema.COLUMN.DESCRIPTION.getName()));
-            list.add(new kr.mamo.travelpoint.db.domain.TravelPoint(no, name, latitude, longitude, description));
+            list.add(new kr.mamo.travelpoint.db.domain.TravelPoint(no, travelNo, name, latitude, longitude, description));
         }
         return list;
     }

@@ -5,13 +5,15 @@ package kr.mamo.travelpoint.db.domain;
  */
 public class TravelPoint {
     private int no;
+    private int travelNo;
     private String name;
     private double latitude;
     private double longitude;
     private String description;
 
-    public TravelPoint(int no, String name, double latitude, double longitude, String description) {
+    public TravelPoint(int no, int travelNo, String name, double latitude, double longitude, String description) {
         this.no = no;
+        this.travelNo = travelNo;
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -48,6 +50,14 @@ public class TravelPoint {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getTravelNo() {
+        return travelNo;
+    }
+
+    public void setTravelNo(int travelNo) {
+        this.travelNo = travelNo;
     }
 
     public int getNo() {

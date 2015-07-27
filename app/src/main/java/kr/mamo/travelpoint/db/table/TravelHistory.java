@@ -57,6 +57,7 @@ public class TravelHistory extends AbstractTable {
             USER_NO("userNo", "INTEGER"),
             TRAVEL_NO("travelNo", "INTEGER"),
             TRAVEL_POINT_NO("travelPointNo", "INTEGER"),
+            IMAGE_PATH("imagePath", "TEXT"),
             LATITUDE("latitude", "DOUBLE"),
             LONGITUDE("longitude", "DOUBLE"),
             DIARY("diary", "TEXT"),

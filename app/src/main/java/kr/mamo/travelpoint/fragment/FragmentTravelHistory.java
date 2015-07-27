@@ -140,38 +140,6 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
         }
     };
 
-    // 저장하기
-    final static String JPEG_FILE_PREFIX = "IMG_";
-    final static String JPEG_FILE_SUFFIX = ".jpg";
-
-    public File createImageFile() throws IOException {
-        String timeStamp = new SimpleDateFormat( "yyyyMMdd_HHmmss").format( new Date());
-        Log.i(Constants.LOGCAT_TAGNAME, "timeStamp : " + timeStamp);
-        String imageFileName = JPEG_FILE_PREFIX + timeStamp + "_";
-        Log.i(Constants.LOGCAT_TAGNAME, "imageFileName : " + imageFileName);
-        File image = File.createTempFile(
-                imageFileName,			// prefix
-                JPEG_FILE_SUFFIX,		// suffix
-                getAlbumDir()				// directory
-        );
-
-        cameraPath = image.getAbsolutePath();
-        Log.i(Constants.LOGCAT_TAGNAME, "cameraPath : " + cameraPath);
-        return image;
-    }
-
-    public File getAlbumDir(){
-        File storageDir = new File(
-                Environment.getExternalStoragePublicDirectory(
-                        Environment.DIRECTORY_PICTURES
-                ),
-               "TravelPoint"
-        );
-
-        Log.i(Constants.LOGCAT_TAGNAME, "storageDir : " + storageDir.getAbsolutePath());
-        return storageDir;
-    }
-
     private AdapterView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
