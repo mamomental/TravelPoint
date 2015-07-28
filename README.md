@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.1.0 | image view |
 | 0.0.18 | license view |
 | 0.0.17 | google api key |
 | 0.0.16 | fragment record |
