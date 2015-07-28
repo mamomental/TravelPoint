@@ -59,8 +59,9 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
         return view;
     }
 
-    private void startImageActivity() {
+    private void startImageActivity(TravelHistory travelHistory) {
         Intent intent = new Intent(getActivity(), ImageActivity.class);
+        intent.putExtra(kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.NO.getName(), travelHistory.getNo());
         startActivity(intent);
     }
 
@@ -68,8 +69,6 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
     public void OnClickTravelPoint(TravelPoint travelPoint) {
         this.travelPoint = travelPoint;
         travelHistoryAdapter.setTravelPoint(travelPoint);
-
-        Log.i(Constants.LOGCAT_TAGNAME, "tp : " + travelPoint.getNo() + ", " + travelPoint.getName());
 
         LatLng ll = new LatLng(travelPoint.getLatitude(), travelPoint.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(ll, 15);
@@ -137,7 +136,7 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
         public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
             TravelHistory travelHistory = (TravelHistory)parent.getAdapter().getItem(position);
 
-            startImageActivity();
+            startImageActivity(travelHistory);
         }
     };
 

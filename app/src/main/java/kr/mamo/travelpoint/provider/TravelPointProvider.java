@@ -26,23 +26,25 @@ public class TravelPointProvider extends ContentProvider {
     public static final Uri     TRAVEL_POINT_URI  = Uri.withAppendedPath(CONTENT_URI, "TravelPoint");
     public static final Uri     TRAVEL_HISTORY_URI  = Uri.withAppendedPath(CONTENT_URI, "TravelHistory");
 
-    static final int USER = 1;
-    static final int USER_EMAIL = 2;
-    static final int TRAVEL = 3;
-    static final int TRAVEL_NO = 4;
-    static final int TRAVEL_POINT = 5;
+    static final int R_USER_LIST = 1;
+    static final int R_USER_BY_EMAIL = 2;
+    static final int R_TRAVEL_LIST = 3;
+    static final int R_TRAVEL_BY_NO = 4;
+    static final int R_TRAVEL_POINT_BY_TRAVELNO = 5;
     static final int C_TRAVEL_HISTORY = 6;
-    static final int R_TRAVEL_HISTORY = 7;
+    static final int R_TRAVEL_HISTORY_LIST = 7;
+    static final int R_TRAVEL_HISTORY_BY_NO = 8;
     static final UriMatcher Matcher;
     static{
         Matcher = new UriMatcher(UriMatcher.NO_MATCH);
-        Matcher.addURI(AUTHORITY, "User", USER);
-        Matcher.addURI(AUTHORITY, "User/*", USER_EMAIL);
-        Matcher.addURI(AUTHORITY, "Travel", TRAVEL);
-        Matcher.addURI(AUTHORITY, "Travel/*", TRAVEL_NO);
-        Matcher.addURI(AUTHORITY, "TravelPoint/*", TRAVEL_POINT);
+        Matcher.addURI(AUTHORITY, "User", R_USER_LIST);
+        Matcher.addURI(AUTHORITY, "User/*", R_USER_BY_EMAIL);
+        Matcher.addURI(AUTHORITY, "Travel", R_TRAVEL_LIST);
+        Matcher.addURI(AUTHORITY, "Travel/*", R_TRAVEL_BY_NO);
+        Matcher.addURI(AUTHORITY, "TravelPoint/*", R_TRAVEL_POINT_BY_TRAVELNO);
         Matcher.addURI(AUTHORITY, "TravelHistory", C_TRAVEL_HISTORY);
-        Matcher.addURI(AUTHORITY, "TravelHistory/*/*", R_TRAVEL_HISTORY);
+        Matcher.addURI(AUTHORITY, "TravelHistory/*", R_TRAVEL_HISTORY_BY_NO);
+        Matcher.addURI(AUTHORITY, "TravelHistory/*/*", R_TRAVEL_HISTORY_LIST);
     }
 
     private DBManager dbManager;
@@ -66,7 +68,7 @@ public class TravelPointProvider extends ContentProvider {
     @Override
     public String getType(Uri uri) {
         switch(Matcher.match(uri)) {
-            case USER_EMAIL :
+            case R_USER_BY_EMAIL:
                 return "oneuser";
         }
         return null;
@@ -77,7 +79,7 @@ public class TravelPointProvider extends ContentProvider {
         long row = 0;
         Uri notiuri = null;
         switch(Matcher.match(uri)) {
-            case USER:
+            case R_USER_LIST:
                 row = db.insert(User.TABLE_NAME, null, values);
                 if (row > 0) {
                     notiuri = ContentUris.withAppendedId(USER_URI, row);
@@ -114,7 +116,7 @@ public class TravelPointProvider extends ContentProvider {
         String orderby = null;
 
         switch(Matcher.match(uri)) {
-            case USER :
+            case R_USER_LIST:
                 qb.setTables(User.TABLE_NAME);
 
                 for (User.Schema.COLUMN column : User.Schema.COLUMN.values()) {
@@ -123,7 +125,7 @@ public class TravelPointProvider extends ContentProvider {
                 qb.setProjectionMap(sNotesProjectionMap);
 
                 break;
-            case USER_EMAIL :
+            case R_USER_BY_EMAIL:
                 qb.setTables(User.TABLE_NAME);
 
                 for (User.Schema.COLUMN column : User.Schema.COLUMN.values()) {
@@ -133,7 +135,7 @@ public class TravelPointProvider extends ContentProvider {
 
                 qb.appendWhere(User.Schema.COLUMN.EMAIL.getName() + "='" + uri.getPathSegments().get(1) + "'");
                 break;
-            case TRAVEL :
+            case R_TRAVEL_LIST:
                 qb.setTables(kr.mamo.travelpoint.db.table.Travel.TABLE_NAME);
 
                 for (kr.mamo.travelpoint.db.table.Travel.Schema.COLUMN column : kr.mamo.travelpoint.db.table.Travel.Schema.COLUMN.values()) {
@@ -141,7 +143,7 @@ public class TravelPointProvider extends ContentProvider {
                 }
                 qb.setProjectionMap(sNotesProjectionMap);
                 break;
-            case TRAVEL_NO :
+            case R_TRAVEL_BY_NO:
                 qb.setTables(kr.mamo.travelpoint.db.table.Travel.TABLE_NAME);
 
                 for (kr.mamo.travelpoint.db.table.Travel.Schema.COLUMN column : kr.mamo.travelpoint.db.table.Travel.Schema.COLUMN.values()) {
@@ -150,7 +152,7 @@ public class TravelPointProvider extends ContentProvider {
                 qb.setProjectionMap(sNotesProjectionMap);
                 qb.appendWhere(Travel.Schema.COLUMN.NO.getName() + "='" + uri.getPathSegments().get(1) + "'");
                 break;
-            case TRAVEL_POINT :
+            case R_TRAVEL_POINT_BY_TRAVELNO:
                 qb.setTables(kr.mamo.travelpoint.db.table.TravelPoint.TABLE_NAME);
 
                 for (kr.mamo.travelpoint.db.table.TravelPoint.Schema.COLUMN column : kr.mamo.travelpoint.db.table.TravelPoint.Schema.COLUMN.values()) {
@@ -159,7 +161,7 @@ public class TravelPointProvider extends ContentProvider {
                 qb.setProjectionMap(sNotesProjectionMap);
                 qb.appendWhere(TravelPoint.Schema.COLUMN.TRAVEL_NO.getName() + "='" + uri.getPathSegments().get(1) + "'");
                 break;
-            case R_TRAVEL_HISTORY :
+            case R_TRAVEL_HISTORY_LIST:
                 qb.setTables(kr.mamo.travelpoint.db.table.TravelHistory.TABLE_NAME);
 
                 for (kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN column : kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.values()) {
@@ -169,6 +171,15 @@ public class TravelPointProvider extends ContentProvider {
                 qb.appendWhere(TravelHistory.Schema.COLUMN.USER_NO.getName() + "='" + uri.getPathSegments().get(1) + "' AND " + TravelHistory.Schema.COLUMN.TRAVEL_POINT_NO.getName() + "='" + uri.getPathSegments().get(2) + "'");
                 orderby = TravelHistory.Schema.COLUMN.NO + " DESC";
                 break;
+            case R_TRAVEL_HISTORY_BY_NO:
+                qb.setTables(kr.mamo.travelpoint.db.table.TravelHistory.TABLE_NAME);
+
+                for (kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN column : kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.values()) {
+                    sNotesProjectionMap.put(column.getName(), column.getName());
+                }
+                qb.setProjectionMap(sNotesProjectionMap);
+                qb.appendWhere(TravelHistory.Schema.COLUMN.NO.getName() + "='" + uri.getPathSegments().get(1) + "'");
+                break;
         }
         cursor = qb.query(db, null, null, null, null, null, orderby);
         return cursor;
@@ -177,7 +188,7 @@ public class TravelPointProvider extends ContentProvider {
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         switch(Matcher.match(uri)) {
-            case USER_EMAIL:
+            case R_USER_BY_EMAIL:
                 selection = User.Schema.COLUMN.EMAIL.getName() + "='" + uri.getPathSegments().get(1) +"'";
                 return db.update(User.TABLE_NAME, values, selection, selectionArgs);
         }
