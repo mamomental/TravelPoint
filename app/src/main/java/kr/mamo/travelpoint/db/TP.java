@@ -124,6 +124,25 @@ public class TP {
         return list;
     }
 
+    public static kr.mamo.travelpoint.db.domain.TravelHistory readTravelHistory(Context context, int travelHistoryNo) {
+        kr.mamo.travelpoint.db.domain.User user = TP.autoLogin(context);
+
+        ContentResolver resolver = context.getContentResolver();
+        Uri idUri = Uri.withAppendedPath(TravelPointProvider.CONTENT_URI, TravelHistory.TABLE_NAME + "/" + travelHistoryNo);
+        Cursor cursor = resolver.query(idUri, null, null, null, null);
+        if (cursor.moveToNext()) {
+            int no = cursor.getInt(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.NO.getName()));
+            int travelNo = cursor.getInt(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.TRAVEL_NO.getName()));
+            int travelPointNo = cursor.getInt(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.TRAVEL_POINT_NO.getName()));
+            String imagePath = cursor.getString(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.IMAGE_PATH.getName()));
+            double latitude = cursor.getDouble(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.LATITUDE.getName()));
+            double longitude = cursor.getDouble(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.LONGITUDE.getName()));
+            String diary = cursor.getString(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.DIARY.getName()));
+            return new kr.mamo.travelpoint.db.domain.TravelHistory(no, user.getNo(), travelNo, travelPointNo, imagePath, latitude, longitude, diary);
+        }
+        return null;
+    }
+
     public static ArrayList<kr.mamo.travelpoint.db.domain.TravelPoint> readTravelPointList(Context context, int travelNo) {
         ContentResolver resolver = context.getContentResolver();
         ArrayList<kr.mamo.travelpoint.db.domain.TravelPoint> list = new ArrayList<kr.mamo.travelpoint.db.domain.TravelPoint>();
