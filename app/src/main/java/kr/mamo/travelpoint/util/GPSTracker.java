@@ -14,6 +14,8 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.util.Log;
 
+import java.text.DecimalFormat;
+
 import kr.mamo.travelpoint.constant.Constants;
 
 public class GPSTracker extends Service implements LocationListener {
@@ -55,8 +57,7 @@ public class GPSTracker extends Service implements LocationListener {
 			builder.insert(0, "k");
 
 		}
-
-		builder.insert(0, distance);
+		builder.insert(0, new DecimalFormat("###,###").format(distance));
 
 		return builder.toString();
 	}
