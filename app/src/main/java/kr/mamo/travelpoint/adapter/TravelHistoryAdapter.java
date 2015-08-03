@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import kr.mamo.travelpoint.R;
 import kr.mamo.travelpoint.db.domain.TravelHistory;
 import kr.mamo.travelpoint.db.domain.TravelPoint;
-import kr.mamo.travelpoint.util.GPSUtil;
+import kr.mamo.travelpoint.util.GPSTracker;
 
 /**
  * Created by alucard on 2015-07-17.
@@ -73,19 +73,17 @@ public class TravelHistoryAdapter extends BaseAdapter {
         if (null != data) {
             String value = data.getDiary() + " " + data.getTravelPointNo() + " " + data.getLatitude() + " " + data.getLongitude();
             if (null != travelPoint) {
-                value += " : " + GPSUtil.calcDistance(travelPoint.getLatitude(), travelPoint.getLongitude(), data.getLatitude(), data.getLongitude()) + " m";
+                value += " : " + GPSTracker.calcDistance(travelPoint.getLatitude(), travelPoint.getLongitude(), data.getLatitude(), data.getLongitude());
             }
 
-            if (null == data.getImagePath()) {  // for emulator
-                Uri uri = Uri.parse("android.resource://"+context.getPackageName()+"/drawable/penguin");
-                image.setImageURI(uri);
-
-            } else {
+            Uri uri = Uri.parse("android.resource://"+context.getPackageName()+"/drawable/penguin");
+            if (null != data.getImagePath()) {
                 File imageFile = new File(data.getImagePath());
                 if (null != imageFile && imageFile.exists() && imageFile.isFile()) {
-                    image.setImageURI(Uri.fromFile(imageFile));
+                    uri = Uri.fromFile(imageFile);
                 }
             }
+            image.setImageURI(uri);
             name.setText(value);
         }
 
