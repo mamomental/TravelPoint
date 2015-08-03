@@ -1,8 +1,12 @@
 package kr.mamo.travelpoint.fragment;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.location.Location;
+import android.location.LocationListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -33,6 +37,7 @@ import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.db.domain.TravelHistory;
 import kr.mamo.travelpoint.db.domain.TravelPoint;
+import kr.mamo.travelpoint.util.GPSTracker;
 
 public class FragmentTravelHistory extends Fragment implements FragmentTravelPoint.OnClickTravelPointListener {
     private ListView travelHistoryList;
@@ -44,6 +49,9 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
     TextView travelPointDescription;
     Button camera;
     TravelPoint travelPoint;
+
+    GPSTracker gpsTracker;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -56,6 +64,7 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
         travelPointDescription = (TextView) view.findViewById(R.id.travel_point_description);
         camera = (Button) view.findViewById(R.id.travel_history_camera);
         camera.setOnClickListener(cameraClickListener);
+        gpsTracker = new GPSTracker(getActivity());
         return view;
     }
 
@@ -126,8 +135,27 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
 
         @Override
         public void onClick(View v) {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivityForResult(takePictureIntent, Constants.ACTIVITY_RESULT.CAMERA);
+            Location location = gpsTracker.getLocation();
+            String distance = GPSTracker.calcDistance(travelPoint.getLatitude(), travelPoint.getLongitude(), location.getLatitude(), location.getLongitude());
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            builder.setMessage(String.format(getActivity().getString(R.string.alert_distance), travelPoint.getName(), distance)).setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(takePictureIntent, Constants.ACTIVITY_RESULT.CAMERA);
+                }
+            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    // no
+                }
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.setTitle("Test");
+            dialog.show();
         }
     };
 

@@ -12,4 +12,6 @@
     <string name="activity_settings_item_account">@string/activity_settings_account_title</string>
 
     <string name="activity_settings_account_title">Account</string>
+
+    <string name="alert_distance">현재 위치는 %1$s와(과) 약 %2$s 떨어져 있습니다. 계속 진행하시겠습니까?</string>
 </resources>

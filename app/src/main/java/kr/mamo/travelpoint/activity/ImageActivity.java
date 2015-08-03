@@ -4,11 +4,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.ImageView;
 
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
 
@@ -18,15 +21,19 @@ import kr.mamo.travelpoint.db.domain.TravelHistory;
 
 public class ImageActivity extends AppCompatActivity {
     SubsamplingScaleImageView travelHistoryImage;
+    SimpleDraweeView travalHistoryStamp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Fresco.initialize(this);
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_image);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
         travelHistoryImage = (SubsamplingScaleImageView) findViewById(R.id.travel_history_image);
         travelHistoryImage.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
+        travalHistoryStamp = (SimpleDraweeView) findViewById(R.id.travel_history_stamp);
 
         setData();
     }
@@ -38,8 +45,22 @@ public class ImageActivity extends AppCompatActivity {
             if (0 < no) {
                 TravelHistory travelHistory = TP.readTravelHistory(this, no);
 
+                Uri uri = Uri.parse("android.resource://"+getPackageName()+"/drawable/penguin");
                 if (null != travelHistory) {
-                    travelHistoryImage.setImage(ImageSource.uri(Uri.fromFile(new File(travelHistory.getImagePath()))));
+                    String path = travelHistory.getImagePath();
+                    if (null != path) {
+                        File file = new File (path);
+                        if (file.exists() && file.isFile()) {
+                            uri = Uri.fromFile(file);
+                        }
+                    }
+                }
+                travelHistoryImage.setImage(ImageSource.uri(uri));
+
+                if (travelHistory.getLatitude() > 0 && travelHistory.getLongitude() > 0) {
+
+                } else {
+                    travalHistoryStamp.setVisibility(View.INVISIBLE);
                 }
             }
         }
