@@ -2,6 +2,7 @@ package kr.mamo.travelpoint.fragment;
 
 import android.app.Fragment;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -30,7 +31,9 @@ public class FragmentTravelRecord extends Fragment implements FragmentTravelHist
     EditText travelRecordText;
     Button travelRecordBtn;
     Uri currentUri;
+    Location currentLocation;
     TravelPoint travelPoint;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,8 +55,9 @@ public class FragmentTravelRecord extends Fragment implements FragmentTravelHist
     }
 
     @Override
-    public void OnCaptureImage(Uri uri) {
+    public void OnCaptureImage(Uri uri, Location location) {
         this.currentUri = uri;
+        this.currentLocation = location;
     }
 
     private View.OnClickListener recordClickListener = new View.OnClickListener() {
@@ -62,15 +66,13 @@ public class FragmentTravelRecord extends Fragment implements FragmentTravelHist
         public void onClick(View v) {
         String diary = travelRecordText.getText().toString();
         travelRecordImage.setImageURI(currentUri);
-        String[] projection = {MediaStore.Images.ImageColumns.DATA, MediaStore.Images.ImageColumns.LATITUDE, MediaStore.Images.ImageColumns.LONGITUDE};
+        String[] projection = {MediaStore.Images.ImageColumns.DATA};
         Cursor cursor = getActivity().getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, MediaStore.Images.ImageColumns.DATA + "='" + currentUri.getPath() + "'", null, null);
 
         if (null != cursor && cursor.moveToNext()) {
-            double lat = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LATITUDE));
-            double lon = cursor.getDouble(cursor.getColumnIndex(MediaStore.Images.ImageColumns.LONGITUDE));
-            TP.createTravelHistory(getActivity(), travelPoint, currentUri.getPath(), lat, lon, diary);
+            TP.createTravelHistory(getActivity(), travelPoint, currentUri.getPath(), currentLocation.getLatitude(), currentLocation.getLongitude(), diary);
         }
-            ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F3);
+        ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F3);
         }
     };
 }
