@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.1.2 | exchange gps info |
 | 0.1.1 | use gps tracker & dialog |
 | 0.1.0 | image view |
 | 0.0.18 | license view |

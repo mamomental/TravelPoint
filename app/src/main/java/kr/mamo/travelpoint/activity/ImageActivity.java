@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.davemorrissey.labs.subscaleview.ImageSource;
@@ -22,6 +24,8 @@ import kr.mamo.travelpoint.db.domain.TravelHistory;
 public class ImageActivity extends AppCompatActivity {
     SubsamplingScaleImageView travelHistoryImage;
     SimpleDraweeView travalHistoryStamp;
+    TextView diaryTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Fresco.initialize(this);
@@ -34,6 +38,7 @@ public class ImageActivity extends AppCompatActivity {
         travelHistoryImage = (SubsamplingScaleImageView) findViewById(R.id.travel_history_image);
         travelHistoryImage.setOrientation(SubsamplingScaleImageView.ORIENTATION_USE_EXIF);
         travalHistoryStamp = (SimpleDraweeView) findViewById(R.id.travel_history_stamp);
+        diaryTextView = (TextView) findViewById(R.id.travel_history_diary);
 
         setData();
     }
@@ -52,8 +57,11 @@ public class ImageActivity extends AppCompatActivity {
                         File file = new File (path);
                         if (file.exists() && file.isFile()) {
                             uri = Uri.fromFile(file);
+                        } else {
+                            Toast.makeText(this, R.string.alert_file, Toast.LENGTH_LONG).show();
                         }
                     }
+                    diaryTextView.setText(travelHistory.getDiary());
                 }
                 travelHistoryImage.setImage(ImageSource.uri(uri));
 

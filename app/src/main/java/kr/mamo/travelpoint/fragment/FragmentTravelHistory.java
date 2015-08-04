@@ -69,8 +69,11 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
     }
 
     private void startImageActivity(TravelHistory travelHistory) {
+//        Location location = gpsTracker.getLocation();
         Intent intent = new Intent(getActivity(), ImageActivity.class);
         intent.putExtra(kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.NO.getName(), travelHistory.getNo());
+//        intent.putExtra(kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.LATITUDE.getName(), location.getLatitude());
+//        intent.putExtra(kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.LONGITUDE.getName(), location.getLongitude());
         startActivity(intent);
     }
 
@@ -124,7 +127,7 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
                 String path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA));
                 if (null != captureImageListener) {
                     ((MainActivity)getActivity()).displayFragment(Constants.Fragment.MainActivity.F4);
-                    captureImageListener.OnCaptureImage(Uri.fromFile(new File(path)));
+                    captureImageListener.OnCaptureImage(Uri.fromFile(new File(path)), gpsTracker.getLocation());
                 }
             }
 
@@ -163,7 +166,6 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long l_position) {
             TravelHistory travelHistory = (TravelHistory)parent.getAdapter().getItem(position);
-
             startImageActivity(travelHistory);
         }
     };
@@ -177,6 +179,6 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
     }
 
     public interface OnCaptureImageListener {
-        public void OnCaptureImage(Uri uri);
+        public void OnCaptureImage(Uri uri, Location location);
     }
 }
