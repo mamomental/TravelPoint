@@ -20,4 +20,5 @@
 
     <string name="subsampling">Copyright 2015 David Morrissey, and licensed under the Apache License, Version 2.0. No attribution is necessary but it is very much appreciated. Star this project if you like it, and send a link to your project on GitHub or app in Google Play if you would like me to add it to this page.
     </string>
+    <string name="swipemenu">https://github.com/baoyongzhang/SwipeMenuListView</string>
 </resources>

@@ -34,6 +34,16 @@
             android:layout_height="wrap_content"
             android:text="@string/subsampling"
             android:textSize="15dp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="SwipeMenuListView"
+            android:textSize="30dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/swipemenu"
+            android:textSize="15dp" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
