@@ -5,9 +5,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.ArrayList;
 
+import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.table.Travel;
 import kr.mamo.travelpoint.db.table.TravelHistory;
 import kr.mamo.travelpoint.db.table.TravelPoint;
@@ -88,6 +90,13 @@ public class TP {
         row.put(TravelHistory.Schema.COLUMN.DIARY.getName(), diary);
 
         return null != resolver.insert(TravelPointProvider.TRAVEL_HISTORY_URI, row);
+    }
+
+    public static int deleteTravelHistory(Context context, int travelHistoryNo) {
+        ContentResolver resolver = context.getContentResolver();
+        Uri idUri = Uri.withAppendedPath(TravelPointProvider.CONTENT_URI, TravelHistory.TABLE_NAME + "/" + travelHistoryNo);
+        String selection = TravelHistory.Schema.COLUMN.NO.getName() + "=?";
+        return resolver.delete(idUri, selection, new String[] {String.valueOf(travelHistoryNo)});
     }
     // read
     private static ArrayList<kr.mamo.travelpoint.db.domain.User> readUserList(Context context) {
