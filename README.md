@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.1.4 | delete function |
 | 0.1.3 | add library : swipe menu |
 | 0.1.2 | exchange gps info |
 | 0.1.1 | use gps tracker & dialog |
