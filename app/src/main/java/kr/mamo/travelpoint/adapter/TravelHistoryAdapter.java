@@ -2,11 +2,13 @@ package kr.mamo.travelpoint.adapter;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.drawee.view.SimpleDraweeView;
 
@@ -14,6 +16,8 @@ import java.io.File;
 import java.util.ArrayList;
 
 import kr.mamo.travelpoint.R;
+import kr.mamo.travelpoint.constant.Constants;
+import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.db.domain.TravelHistory;
 import kr.mamo.travelpoint.db.domain.TravelPoint;
 import kr.mamo.travelpoint.util.GPSTracker;
@@ -100,6 +104,21 @@ public class TravelHistoryAdapter extends BaseAdapter {
 
     public void addItem(ArrayList<TravelHistory> list) {
         this.list = list;
+        notifyDataSetChanged();
+    }
+
+    public void delItem(Context context, int position) {
+        TravelHistory travelHistory = list.get(position);
+
+        String path = travelHistory.getImagePath();
+        Log.i(Constants.LOGCAT_TAGNAME, "path ; " + path);
+        if (null != path) {
+            File file = new File (path);
+            Log.i(Constants.LOGCAT_TAGNAME, "file.delete() ; " + file.delete());
+        }
+
+        TP.deleteTravelHistory(context, travelHistory.getNo());
+        list.remove(position);
         notifyDataSetChanged();
     }
 

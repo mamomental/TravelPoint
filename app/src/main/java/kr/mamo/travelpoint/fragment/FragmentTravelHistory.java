@@ -189,7 +189,7 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
                     break;
                 case 1:
                     // delete
-                    Toast.makeText(getActivity(), "delete", Toast.LENGTH_LONG).show();
+                    travelHistoryAdapter.delItem(getActivity(), position);
                     break;
             }
             // false : close the menu; true : not close the menu
