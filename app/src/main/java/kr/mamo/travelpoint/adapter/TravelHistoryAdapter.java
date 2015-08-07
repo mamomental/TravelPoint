@@ -2,6 +2,7 @@ package kr.mamo.travelpoint.adapter;
 
 import android.content.Context;
 import android.net.Uri;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,9 +113,10 @@ public class TravelHistoryAdapter extends BaseAdapter {
 
         String path = travelHistory.getImagePath();
         Log.i(Constants.LOGCAT_TAGNAME, "path ; " + path);
+
         if (null != path) {
-            File file = new File (path);
-            Log.i(Constants.LOGCAT_TAGNAME, "file.delete() ; " + file.delete());
+            context.getContentResolver().delete(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    MediaStore.Images.Media.DATA + "='" + path + "'", null);
         }
 
         TP.deleteTravelHistory(context, travelHistory.getNo());

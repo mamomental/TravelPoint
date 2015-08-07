@@ -58,6 +58,11 @@ public class FragmentTravelRecord extends Fragment implements FragmentTravelHist
     public void OnCaptureImage(Uri uri, Location location) {
         this.currentUri = uri;
         this.currentLocation = location;
+        setData();
+    }
+
+    private void setData() {
+        travelRecordImage.setImageURI(currentUri);
     }
 
     private View.OnClickListener recordClickListener = new View.OnClickListener() {
