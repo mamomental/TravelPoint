@@ -70,8 +70,7 @@ public class TPUtil {
 		}
 
 		if (0 < time / DAY) {
-//			return String.format(context.getString(R.string.difference_time_day), (time / DAY));
-			return null;
+			return String.format(context.getString(R.string.difference_time_day), (time / DAY));
 		}
 
 		if (0 < time / HOUR) {
