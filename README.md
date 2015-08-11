@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.1.6 | calc date |
 | 0.1.5 | delete image |
 | 0.1.4 | delete function |
 | 0.1.3 | add library : swipe menu |
