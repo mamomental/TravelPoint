@@ -128,7 +128,8 @@ public class TP {
             double latitude = cursor.getDouble(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.LATITUDE.getName()));
             double longitude = cursor.getDouble(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.LONGITUDE.getName()));
             String diary = cursor.getString(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.DIARY.getName()));
-            list.add(new kr.mamo.travelpoint.db.domain.TravelHistory(no, user.getNo(), travelNo, travelPointNo, imagePath, latitude, longitude, diary));
+            String createDate = cursor.getString(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.CREATE_DATE.getName()));
+            list.add(new kr.mamo.travelpoint.db.domain.TravelHistory(no, user.getNo(), travelNo, travelPointNo, imagePath, latitude, longitude, diary, createDate));
         }
         return list;
     }
@@ -147,7 +148,8 @@ public class TP {
             double latitude = cursor.getDouble(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.LATITUDE.getName()));
             double longitude = cursor.getDouble(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.LONGITUDE.getName()));
             String diary = cursor.getString(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.DIARY.getName()));
-            return new kr.mamo.travelpoint.db.domain.TravelHistory(no, user.getNo(), travelNo, travelPointNo, imagePath, latitude, longitude, diary);
+            String createDate = cursor.getString(cursor.getColumnIndex(TravelHistory.Schema.COLUMN.CREATE_DATE.getName()));
+            return new kr.mamo.travelpoint.db.domain.TravelHistory(no, user.getNo(), travelNo, travelPointNo, imagePath, latitude, longitude, diary, createDate);
         }
         return null;
     }

@@ -10,10 +10,26 @@
         android:layout_height="80dp" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/travel_history_item_name"
+        android:id="@+id/travel_history_item_diary"
+        android:text="diary"
+        android:layout_toEndOf="@+id/travel_history_item_image"
+        android:layout_alignParentEnd="true" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/travel_history_item_distance"
+        android:text="distance"
         android:layout_toRightOf="@+id/travel_history_item_image"
-        android:layout_alignTop="@+id/travel_history_item_image"
+        android:layout_alignParentBottom="true"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/travel_history_item_date"
+        android:text="date"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
         />
 </RelativeLayout>

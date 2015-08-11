@@ -14,7 +14,12 @@ import android.widget.Toast;
 import com.facebook.drawee.view.SimpleDraweeView;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.SimpleTimeZone;
 
 import kr.mamo.travelpoint.R;
 import kr.mamo.travelpoint.constant.Constants;
@@ -22,15 +27,18 @@ import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.db.domain.TravelHistory;
 import kr.mamo.travelpoint.db.domain.TravelPoint;
 import kr.mamo.travelpoint.util.GPSTracker;
+import kr.mamo.travelpoint.util.TPUtil;
 
 /**
  * Created by alucard on 2015-07-17.
  */
 public class TravelHistoryAdapter extends BaseAdapter {
+    Context context;
     ArrayList<TravelHistory> list;
     TravelPoint travelPoint;
 
-    public TravelHistoryAdapter() {
+    public TravelHistoryAdapter(Context context) {
+        this.context = context;
         list = new ArrayList<TravelHistory>();
     }
     @Override
@@ -55,7 +63,9 @@ public class TravelHistoryAdapter extends BaseAdapter {
         final Context context = parent.getContext();
 
         SimpleDraweeView image = null;
-        TextView name = null;
+        TextView diary = null;
+        TextView distance = null;
+        TextView date = null;
         TravelHistoryHolder holder = null;
 
         if (null == convertView) {
@@ -63,24 +73,25 @@ public class TravelHistoryAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.travel_history_item, parent, false);
 
             image = (SimpleDraweeView) convertView.findViewById(R.id.travel_history_item_image);
-            name    = (TextView) convertView.findViewById(R.id.travel_history_item_name);
+            diary    = (TextView) convertView.findViewById(R.id.travel_history_item_diary);
+            distance    = (TextView) convertView.findViewById(R.id.travel_history_item_distance);
+            date    = (TextView) convertView.findViewById(R.id.travel_history_item_date);
 
             holder = new TravelHistoryHolder();
             holder.image = image;
-            holder.name = name;
+            holder.diary = diary;
+            holder.distance = distance;
+            holder.date = date;
             convertView.setTag(holder);
         }
         else {
             holder  = (TravelHistoryHolder) convertView.getTag();
             image = holder.image;
-            name = holder.name;
+            diary = holder.diary;
+            distance = holder.distance;
+            date = holder.date;
         }
         if (null != data) {
-            String value = data.getDiary() + " " + data.getTravelPointNo() + " " + data.getLatitude() + " " + data.getLongitude();
-            if (null != travelPoint) {
-                value += " : " + GPSTracker.calcDistance(travelPoint.getLatitude(), travelPoint.getLongitude(), data.getLatitude(), data.getLongitude());
-            }
-
             Uri uri = Uri.parse("android.resource://"+context.getPackageName()+"/drawable/penguin");
             if (null != data.getImagePath()) {
                 File imageFile = new File(data.getImagePath());
@@ -89,7 +100,11 @@ public class TravelHistoryAdapter extends BaseAdapter {
                 }
             }
             image.setImageURI(uri);
-            name.setText(value);
+            if (null != travelPoint) {
+                diary.setText(data.getDiary());
+                distance.setText(GPSTracker.calcDistance(travelPoint.getLatitude(), travelPoint.getLongitude(), data.getLatitude(), data.getLongitude()));
+                date.setText(TPUtil.convertString(context, data.getCreateDate()));
+            }
         }
 
         return convertView;
@@ -130,6 +145,8 @@ public class TravelHistoryAdapter extends BaseAdapter {
 
     private class TravelHistoryHolder {
         SimpleDraweeView image;
-        TextView name;
+        TextView diary;
+        TextView distance;
+        TextView date;
     }
 }

@@ -44,6 +44,7 @@ import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.TP;
 import kr.mamo.travelpoint.db.domain.TravelHistory;
 import kr.mamo.travelpoint.db.domain.TravelPoint;
+import kr.mamo.travelpoint.util.DipUtil;
 import kr.mamo.travelpoint.util.GPSTracker;
 
 public class FragmentTravelHistory extends Fragment implements FragmentTravelPoint.OnClickTravelPointListener {
@@ -65,7 +66,7 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
         View view = inflater.inflate(R.layout.fragment_travel_history, container, false);
         googleMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.travel_point_map)).getMap();
         travelHistoryList = (SwipeMenuListView) view.findViewById(R.id.travel_history_list);
-        travelHistoryAdapter = new TravelHistoryAdapter();
+        travelHistoryAdapter = new TravelHistoryAdapter(getActivity());
         travelHistoryList.setAdapter(travelHistoryAdapter);
         travelHistoryList.setOnItemClickListener(itemClickListener);
         travelHistoryList.setMenuCreator(creator);
@@ -78,11 +79,8 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
     }
 
     private void startImageActivity(TravelHistory travelHistory) {
-//        Location location = gpsTracker.getLocation();
         Intent intent = new Intent(getActivity(), ImageActivity.class);
         intent.putExtra(kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.NO.getName(), travelHistory.getNo());
-//        intent.putExtra(kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.LATITUDE.getName(), location.getLatitude());
-//        intent.putExtra(kr.mamo.travelpoint.db.table.TravelHistory.Schema.COLUMN.LONGITUDE.getName(), location.getLongitude());
         startActivity(intent);
     }
 
@@ -148,13 +146,11 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
         @Override
         public void create(SwipeMenu menu) {
             // create "open" item
-            SwipeMenuItem openItem = new SwipeMenuItem(
-                    getActivity());
+            SwipeMenuItem openItem = new SwipeMenuItem(getActivity());
             // set item background
-            openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                    0xCE)));
+            openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9, 0xCE)));
             // set item width
-            openItem.setWidth(90);
+            openItem.setWidth(DipUtil.convertDpToPixel(80, getActivity()));
             // set item title
             openItem.setTitle("Open");
             // set item title fontsize
@@ -165,13 +161,11 @@ public class FragmentTravelHistory extends Fragment implements FragmentTravelPoi
             menu.addMenuItem(openItem);
 
             // create "delete" item
-            SwipeMenuItem deleteItem = new SwipeMenuItem(
-                    getActivity());
+            SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity());
             // set item background
-            deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                    0x3F, 0x25)));
+            deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9, 0x3F, 0x25)));
             // set item width
-            deleteItem.setWidth(90);
+            deleteItem.setWidth(DipUtil.convertDpToPixel(80, getActivity()));
             // set a icon
             deleteItem.setIcon(R.drawable.penguin);
             // add to menu

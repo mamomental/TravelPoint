@@ -12,9 +12,10 @@ public class TravelHistory {
     private double latitude;
     private double longitude;
     private String diary;
+    private String createDate;
 
 
-    public TravelHistory(int no, int userNo, int travelNo, int travelPointNo, String imagePath, double latitude, double longitude, String diary) {
+    public TravelHistory(int no, int userNo, int travelNo, int travelPointNo, String imagePath, double latitude, double longitude, String diary, String createDate) {
         this.no = no;
         this.userNo = userNo;
         this.travelNo = travelNo;
@@ -23,6 +24,7 @@ public class TravelHistory {
         this.latitude = latitude;
         this.longitude = longitude;
         this.diary = diary;
+        this.createDate = createDate;
     }
 
     public int getNo() {
@@ -87,5 +89,13 @@ public class TravelHistory {
 
     public void setDiary(String diary) {
         this.diary = diary;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 }
