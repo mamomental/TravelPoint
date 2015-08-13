@@ -36,35 +36,44 @@ import org.json.JSONObject;
 import java.util.List;
 
 import kr.mamo.travelpoint.R;
+import kr.mamo.travelpoint.auth.FacebookLogin;
+import kr.mamo.travelpoint.auth.FacebookLoginResultInterface;
+import kr.mamo.travelpoint.auth.LocalLogin;
+import kr.mamo.travelpoint.auth.LocalLoginResultInterface;
 import kr.mamo.travelpoint.constant.Constants;
 import kr.mamo.travelpoint.db.TP;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends Activity {
-    private UserLoginTask mAuthTask = null;
-
+public class LoginActivity extends Activity implements LocalLoginResultInterface, FacebookLoginResultInterface {
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private LoginButton facebook;
     CallbackManager callbackManager;
-
+    LocalLogin localLogin;
+    FacebookLogin facebookLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         FacebookSdk.sdkInitialize(getApplicationContext());
+        localLogin = new LocalLogin(getApplicationContext());
+        localLogin.setResultInterface(this);
+        facebookLogin = new FacebookLogin((getApplicationContext()));
+        facebookLogin.setResultInterface(this);
 
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         boolean auto = prefs.getBoolean(Constants.Preference.Account.AUTO_LOGIN, true);
         if (auto) {
-            kr.mamo.travelpoint.db.domain.User user = TP.autoLogin(getApplicationContext());
-            if (null != user) {
+            if (localLogin.isLoggedIn()) {
                 startMainActivity();
+            } else {
+                facebookLogin.checkLoggedIn();
             }
+
         }
 
         setContentView(R.layout.activity_login);
@@ -109,29 +118,6 @@ public class LoginActivity extends Activity {
         // Callback registration
         facebook.registerCallback(callbackManager, facebookCallback);
 
-        AccessToken at = AccessToken.getCurrentAccessToken();
-        if (null != at) {
-            Log.i(Constants.LOGCAT_TAGNAME, "at : " + at.getToken());
-
-            GraphRequest request = GraphRequest.newMeRequest(at, new GraphRequest.GraphJSONObjectCallback() {
-                @Override
-                public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
-                    Log.i(Constants.LOGCAT_TAGNAME, "response : " + graphResponse.toString());
-
-                    try {
-                        int responseCode = graphResponse.getJSONObject().getInt("responseCode");
-                    } catch (JSONException e) {
-
-                    }
-
-                }
-            });
-
-            Bundle parameters = new Bundle();
-            parameters.putString("fields", "email");
-            request.setParameters(parameters);
-            request.executeAsync();
-        }
     }
 
     @Override
@@ -143,31 +129,10 @@ public class LoginActivity extends Activity {
 
 
     public void attemptLocalLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
+        Log.i(Constants.LOGCAT_TAGNAME, "1");
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            mAuthTask = new UserLoginTask(getApplicationContext(), email, password);
-            mAuthTask.execute((Void) null);
-        }
+        localLogin.asyncLogin(email, password);
     }
 
     private void startFacebookActivity() {
@@ -205,66 +170,37 @@ public class LoginActivity extends Activity {
     FacebookCallback<LoginResult> facebookCallback = new FacebookCallback<LoginResult>() {
         @Override
         public void onSuccess(LoginResult loginResult) {
-            Log.i(Constants.LOGCAT_TAGNAME, "facebook success :");
-            AccessToken token = loginResult.getAccessToken();
+            facebookLogin.checkLoggedIn();
         }
 
         @Override
         public void onCancel() {
-            Log.i(Constants.LOGCAT_TAGNAME, "facebook cancel :");
-
         }
 
         @Override
         public void onError(FacebookException exception) {
-            Log.i(Constants.LOGCAT_TAGNAME, "facebook error :");
-
         }
     };
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-        private final Context mContext;
-        private final String mEmail;
-        private final String mPassword;
+    @Override
+    public void onSuccess() {
+        startMainActivity();
+    }
 
-        UserLoginTask(Context context, String email, String password) {
-            mContext = context;
-            mEmail = email;
-            mPassword = password;
-        }
+    @Override
+    public void onFail() {
+        mPasswordView.setError(getString(R.string.error_incorrect_password));
+        mPasswordView.requestFocus();
+    }
 
-        @Override
-        protected Boolean doInBackground(Void... params) {
+    @Override
+    public void isLoggedIn(boolean loggedIn, String email, String id) {
+        Log.i(Constants.LOGCAT_TAGNAME, "facebook isLoggedIn : " + loggedIn);
+        Log.i(Constants.LOGCAT_TAGNAME, "facebook email : " + email);
+        Log.i(Constants.LOGCAT_TAGNAME, "facebook id : " + id);
 
-            boolean result = TP.validateUser(mContext, mEmail, mPassword);
-            if (result) {
-                SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
-                prefs.putString(Constants.Preference.Account.EMAIL, mEmail);
-                prefs.commit();
-
-            }
-            return result;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-
-            if (success) {
-                startMainActivity();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
+        if (loggedIn && TP.validateUser(this, email, id)) {
+            startMainActivity();
         }
     }
 }
