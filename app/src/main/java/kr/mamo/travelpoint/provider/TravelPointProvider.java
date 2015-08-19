@@ -198,7 +198,7 @@ public class TravelPointProvider extends ContentProvider {
         switch(Matcher.match(uri)) {
             case USER_BY_EMAIL:
                 selection = User.Schema.COLUMN.EMAIL.getName() + "='" + uri.getPathSegments().get(1) +"'";
-                return db.update(User.TABLE_NAME, values, selection, selectionArgs);
+                return db.update(User.TABLE_NAME, values, selection, null);
         }
         return 0;
     }

@@ -32,19 +32,12 @@ public class FacebookLogin implements FacebookLoginInterface {
     public void checkLoggedIn() {
         AccessToken at = AccessToken.getCurrentAccessToken();
         if (null != at) {
-            Log.i(Constants.LOGCAT_TAGNAME, "at : " + at.getToken());
-
             GraphRequest request = GraphRequest.newMeRequest(at, new GraphRequest.GraphJSONObjectCallback() {
                 @Override
                 public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
                     try {
-                        Log.i(Constants.LOGCAT_TAGNAME, "a : ");
                         String email = jsonObject.getString("email");
                         String id = jsonObject.getString("id");
-
-                        Log.i(Constants.LOGCAT_TAGNAME, "email : " + email);
-                        Log.i(Constants.LOGCAT_TAGNAME, "id : " + id);
-
                         if (null != resultInterface && null != email && null != id) {
                             resultInterface.isLoggedIn(true, email, id);
                         } else {

@@ -23,7 +23,8 @@ public class LocalLogin implements LocalLoginInterface {
     @Override
     public boolean isLoggedIn() {
         kr.mamo.travelpoint.db.domain.User user = TP.autoLogin(context);
-        return (null != user);
+
+        return (null != user && user.getType() == 0);
     }
 
     @Override
@@ -72,8 +73,7 @@ public class LocalLogin implements LocalLoginInterface {
 
         @Override
         protected Boolean doInBackground(Void... params) {
-
-            boolean result = TP.validateUser(mContext, mEmail, mPassword);
+            boolean result = TP.validateUser(mContext, mEmail, mPassword, 0);
             if (result) {
                 SharedPreferences.Editor prefs = PreferenceManager.getDefaultSharedPreferences(mContext).edit();
                 prefs.putString(Constants.Preference.Account.EMAIL, mEmail);

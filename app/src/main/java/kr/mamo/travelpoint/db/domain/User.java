@@ -7,12 +7,14 @@ public class User {
     private int no;
     private String email;
     private String password;
+    private int type;
     private boolean signIn;
 
-    public User(int no, String email, String password, boolean signIn) {
+    public User(int no, String email, String password, int type, boolean signIn) {
         this.no = no;
         this.email = email;
         this.password = password;
+        this.type = type;
         this.signIn = signIn;
     }
 
@@ -38,6 +40,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     public boolean isSignIn() {
