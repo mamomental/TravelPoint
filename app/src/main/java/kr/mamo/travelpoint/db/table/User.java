@@ -54,6 +54,7 @@ public class User extends AbstractTable {
             NO ("no", "INTEGER PRIMARY KEY AUTOINCREMENT"),
             EMAIL("email", "TEXT"),
             PASSWORD("password", "TEXT"),
+            TYPE("type", "INTEGER"),
             SIGN_IN("signIn", "INTEGER DEFAULT 0");
 
             private String name;

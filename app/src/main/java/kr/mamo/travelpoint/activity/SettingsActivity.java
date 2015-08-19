@@ -17,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.facebook.login.LoginManager;
+
 import java.util.List;
 
 import kr.mamo.travelpoint.R;
@@ -112,12 +114,13 @@ public class SettingsActivity extends PreferenceActivity {
     };
 
     private void startLicenseActivity() {
-        Log.i(Constants.LOGCAT_TAGNAME, "licenseActivity");
         Intent intent = new Intent(this, LicenseActivity.class);
         startActivity(intent);
     }
 
     private void logout() {
+        LoginManager.getInstance().logOut();
+
         Intent intent = new Intent();
         intent.putExtra(Constants.Preference.Account.LOGOUT, true);
         setResult(Constants.ACTIVITY_RESULT.SETTINGS, intent);
