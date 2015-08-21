@@ -166,7 +166,8 @@ public class LoginActivity extends Activity implements LocalLoginResultInterface
     private void convertLoginType(String email, String password, int type) {
         User user = TP.readUser(this, email);
         user.setPassword(password);
-        user.setType(0);
+        user.setType(type);
+        user.setSignIn(true);
         TP.updateUser(this, user);
         startMainActivity();
     }
@@ -237,7 +238,7 @@ public class LoginActivity extends Activity implements LocalLoginResultInterface
                 startMainActivity();
             } else if (null != TP.readUser(this, email)) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-
+                User user = TP.readUser(this, email);
                 builder.setMessage("test").setCancelable(false).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

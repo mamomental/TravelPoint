@@ -55,9 +55,7 @@ public class TP {
     public static void signOut(Context context) {
         ArrayList<kr.mamo.travelpoint.db.domain.User> list = readUserList(context);
         for (kr.mamo.travelpoint.db.domain.User user : list) {
-            Log.i(Constants.LOGCAT_TAGNAME, "user list : " + user.getEmail());
             if (user.isSignIn()) {
-                Log.i(Constants.LOGCAT_TAGNAME, "signOut : " + user.getType());
                 user.setSignIn(false);
                 updateUser(context, user);
             }
@@ -113,13 +111,14 @@ public class TP {
 
     public static ArrayList<kr.mamo.travelpoint.db.domain.TravelHistory> readTravelHistoryList(Context context, int travelPointNo) {
         kr.mamo.travelpoint.db.domain.User user = TP.autoLogin(context);
-
         ContentResolver resolver = context.getContentResolver();
         ArrayList<kr.mamo.travelpoint.db.domain.TravelHistory> list = new ArrayList<kr.mamo.travelpoint.db.domain.TravelHistory>();
         Uri idUri = Uri.withAppendedPath(TravelPointProvider.CONTENT_URI, TravelHistory.TABLE_NAME + "/" + user.getNo() + "/" + travelPointNo);
         Cursor cursor = resolver.query(idUri, null, null, null, null);
-        while (cursor.moveToNext()) {
-            list.add(parseTravelHistory(cursor, user.getNo()));
+        if (null != cursor) {
+            while (cursor.moveToNext()) {
+                list.add(parseTravelHistory(cursor, user.getNo()));
+            }
         }
         return list;
     }
@@ -183,9 +182,6 @@ public class TP {
     public static void updateUser(Context context, kr.mamo.travelpoint.db.domain.User user) {
         ContentResolver resolver = context.getContentResolver();
 
-        Log.i(Constants.LOGCAT_TAGNAME, "updateUser1 : " + user.getEmail());
-        Log.i(Constants.LOGCAT_TAGNAME, "updateUser2 : " + user.getType());
-
         ContentValues row = new ContentValues();
         row.put(User.Schema.COLUMN.EMAIL.getName(), user.getEmail());
         row.put(User.Schema.COLUMN.PASSWORD.getName(), user.getPassword());
@@ -195,8 +191,6 @@ public class TP {
         resolver.update(idUri, row, null, null);
 
         kr.mamo.travelpoint.db.domain.User user2 = readUser(context, user.getEmail());
-        Log.i(Constants.LOGCAT_TAGNAME, "저장 후 꺼내보면  : " + user2.getType());
-
     }
 
     private static kr.mamo.travelpoint.db.domain.User parseUser(Cursor cursor) {
