@@ -3,6 +3,7 @@
 ## Release History
 | release | description |
 | --- | :--- |
+| 0.1.9 | bug fix |
 | 0.1.8 | login duplicated |
 | 0.1.7 | facebook login |
 | 0.1.6 | calc date |
